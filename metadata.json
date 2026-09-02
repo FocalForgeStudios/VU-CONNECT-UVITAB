@@ -1,0 +1,6 @@
+{
+  "name": "VU Connect",
+  "description": "The official student networking, study group matchmaking, spontaneous catchups, and campus guild hub for Victoria University (VU).",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
