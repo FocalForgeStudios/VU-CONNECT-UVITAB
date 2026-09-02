@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="vuGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#D8232A" />
+      <stop offset="50%" stop-color="#B91C1C" />
+      <stop offset="100%" stop-color="#3A86C8" />
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="100%" stop-color="#E2E8F0" />
+    </linearGradient>
+    <filter id="subtleShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-opacity="0.25" flood-color="#0F172A" />
+    </filter>
+  </defs>
+
+  <!-- Squircle Base with VU Red to Blue Theme -->
+  <rect width="64" height="64" rx="16" fill="url(#vuGrad)" />
+  
+  <!-- Subtle Glass Border Overlay -->
+  <rect x="1" y="1" width="62" height="62" rx="15" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="1.5" />
+
+  <!-- Connection Nodes Graphic / Dynamic Geometric 'VU' Monogram -->
+  <g filter="url(#subtleShadow)">
+    <!-- Letter V Component (Left) -->
+    <path d="M14 18 L24 43 Q26 48 30 48 Q32 48 33 46 L38 34 L31 34 L26 43 L19 18 Z" fill="url(#accentGrad)" />
+    
+    <!-- Letter U Component (Right & Connected Bridge) -->
+    <path d="M37 18 L37 38 Q37 46 45 46 Q53 46 53 38 L53 18 L46 18 L46 37 Q46 41 45 41 Q44 41 44 37 L44 18 Z" fill="url(#accentGrad)" />
+    
+    <!-- Connected Synergy Spark / Node in VU Brand Gold/Red Accent -->
+    <circle cx="45" cy="18" r="3.5" fill="#FBBF24" stroke="#D8232A" stroke-width="1" />
+    <circle cx="19" cy="18" r="3.5" fill="#38BDF8" stroke="#1E40AF" stroke-width="1" />
+  </g>
+</svg>
