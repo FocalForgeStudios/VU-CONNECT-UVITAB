@@ -1,0 +1,67 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isValidString(val, maxLen) {
+      return val is string && val.size() > 0 && val.size() <= maxLen;
+    }
+
+    // User profiles collection
+    match /users/{userId} {
+      allow read: if true;
+      allow create: if request.resource.data.name is string && request.resource.data.name.size() <= 80;
+      allow update: if true;
+      allow delete: if false;
+    }
+
+    // Matchmaking candidate profiles
+    match /match_profiles/{profileId} {
+      allow read: if true;
+      allow create: if request.resource.data.name is string && request.resource.data.name.size() <= 80;
+      allow update: if true;
+      allow delete: if true;
+    }
+
+    // Spontaneous CatchUps / Study Groups
+    match /catchups/{catchupId} {
+      allow read: if true;
+      allow create: if request.resource.data.title is string && request.resource.data.title.size() <= 120;
+      allow update: if true;
+      allow delete: if true;
+    }
+
+    // Faculty & Guild Discussion Posts
+    match /hub_posts/{postId} {
+      allow read: if true;
+      allow create: if request.resource.data.title is string && request.resource.data.content is string && request.resource.data.content.size() <= 2000;
+      allow update: if true;
+      allow delete: if true;
+    }
+
+    // Student Direct Messages & Conversations
+    match /conversations/{conversationId} {
+      allow read: if true;
+      allow create: if request.resource.data.name is string;
+      allow update: if true;
+      allow delete: if true;
+
+      // Nested messages subcollection (if used)
+      match /messages/{messageId} {
+        allow read: if true;
+        allow create: if request.resource.data.text is string && request.resource.data.text.size() <= 1000;
+        allow update: if true;
+        allow delete: if false;
+      }
+    }
+  }
+}

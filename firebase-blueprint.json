@@ -1,0 +1,113 @@
+{
+  "entities": {
+    "users": {
+      "title": "User",
+      "description": "Registered student profiles on Victoria University Connect",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Firebase Auth UID or unique ID" },
+        "name": { "type": "string", "description": "Full student name", "maxLength": 80 },
+        "email": { "type": "string", "description": "Student email address" },
+        "university": { "type": "string", "description": "University affiliation", "default": "Victoria University" },
+        "major": { "type": "string", "description": "Faculty & Major / Program", "maxLength": 100 },
+        "year": { "type": "string", "description": "Year of study or graduation class", "maxLength": 50 },
+        "bio": { "type": "string", "description": "Brief biography or study goals", "maxLength": 500 },
+        "courses": { "type": "array", "items": { "type": "string" }, "description": "Enrolled courses" },
+        "interests": { "type": "array", "items": { "type": "string" }, "description": "Academic and personal interests" },
+        "avatar": { "type": "string", "description": "Avatar URL or lightweight vector link", "maxLength": 500 },
+        "location": { "type": "string", "description": "Preferred study spot or campus zone", "maxLength": 80 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "email"]
+    },
+    "match_profiles": {
+      "title": "MatchProfile",
+      "description": "Discoverable student candidate cards for peer study matchmaking",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "User ID of the profile creator" },
+        "name": { "type": "string", "maxLength": 80 },
+        "major": { "type": "string", "maxLength": 100 },
+        "year": { "type": "string", "maxLength": 50 },
+        "university": { "type": "string", "default": "Victoria University" },
+        "compatScore": { "type": "number", "minimum": 50, "maximum": 100 },
+        "bio": { "type": "string", "maxLength": 500 },
+        "courses": { "type": "array", "items": { "type": "string" } },
+        "interests": { "type": "array", "items": { "type": "string" } },
+        "avatar": { "type": "string", "maxLength": 500 },
+        "location": { "type": "string", "maxLength": 80 },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "major", "bio"]
+    },
+    "catchups": {
+      "title": "CatchUp",
+      "description": "Spontaneous study sprint or coffee meetup sessions",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "maxLength": 120 },
+        "host": { "type": "string", "maxLength": 80 },
+        "hostId": { "type": "string" },
+        "hostAvatar": { "type": "string", "maxLength": 500 },
+        "location": { "type": "string", "maxLength": 100 },
+        "time": { "type": "string", "maxLength": 60 },
+        "tag": { "type": "string", "maxLength": 40 },
+        "attendees": { "type": "number", "minimum": 1 },
+        "maxAttendees": { "type": "number", "maximum": 50 },
+        "attendeeIds": { "type": "array", "items": { "type": "string" } },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "location", "time", "host"]
+    },
+    "hub_posts": {
+      "title": "HubPost",
+      "description": "Faculty and guild discussion forum posts",
+      "type": "object",
+      "properties": {
+        "category": { "type": "string", "enum": ["all", "tech", "health", "business", "law", "humanities"] },
+        "author": { "type": "string", "maxLength": 80 },
+        "authorId": { "type": "string" },
+        "authorRole": { "type": "string", "maxLength": 100 },
+        "authorAvatar": { "type": "string", "maxLength": 500 },
+        "title": { "type": "string", "maxLength": 150 },
+        "content": { "type": "string", "maxLength": 1200 },
+        "upvotes": { "type": "number", "default": 1 },
+        "upvoterIds": { "type": "array", "items": { "type": "string" } },
+        "commentsCount": { "type": "number", "default": 0 },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["category", "author", "title", "content"]
+    },
+    "conversations": {
+      "title": "Conversation",
+      "description": "Direct student-to-student peer chat channels",
+      "type": "object",
+      "properties": {
+        "participantIds": { "type": "array", "items": { "type": "string" } },
+        "name": { "type": "string" },
+        "avatar": { "type": "string" },
+        "status": { "type": "string", "default": "online" },
+        "major": { "type": "string" },
+        "lastMessage": { "type": "string", "maxLength": 300 },
+        "lastMessageTime": { "type": "string" },
+        "messages": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "sender": { "type": "string", "enum": ["me", "them"] },
+              "senderId": { "type": "string" },
+              "text": { "type": "string", "maxLength": 500 },
+              "time": { "type": "string" }
+            }
+          }
+        },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name"]
+    }
+  }
+}

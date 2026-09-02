@@ -128,6 +128,67 @@
     bindEvents();
     renderActiveView();
     updateUnreadBadge();
+    initFirebaseSync();
+  }
+
+  function initFirebaseSync() {
+    if (!window.FirebaseService || typeof window.FirebaseService.isReady !== "function") {
+      setTimeout(initFirebaseSync, 300);
+      return;
+    }
+
+    if (!window.FirebaseService.isReady()) {
+      setTimeout(initFirebaseSync, 500);
+      return;
+    }
+
+    // Real-time Cloud Firestore Matchmaking Candidates Listener
+    window.FirebaseService.subscribeMatchProfiles((cloudProfiles) => {
+      if (cloudProfiles && cloudProfiles.length > 0) {
+        AppState.matchProfiles = cloudProfiles;
+        persistData("vu_match_profiles", AppState.matchProfiles);
+        if (AppState.activeView === "match" || AppState.activeView === "dashboard") {
+          renderActiveView();
+        }
+      }
+    });
+
+    // Real-time Cloud Firestore CatchUps (Study Meetups) Listener
+    window.FirebaseService.subscribeCatchups((cloudCatchups) => {
+      if (cloudCatchups && cloudCatchups.length > 0) {
+        AppState.catchups = cloudCatchups;
+        persistData("vu_catchups", AppState.catchups);
+        if (AppState.activeView === "catchup" || AppState.activeView === "dashboard") {
+          renderActiveView();
+        }
+      }
+    });
+
+    // Real-time Cloud Firestore Faculty Hub Posts Listener
+    window.FirebaseService.subscribeHubPosts(AppState.activeHubCategory, (cloudPosts) => {
+      if (cloudPosts && cloudPosts.length > 0) {
+        AppState.hubPosts = cloudPosts;
+        persistData("vu_hub_posts", AppState.hubPosts);
+        if (AppState.activeView === "hubs" || AppState.activeView === "dashboard") {
+          renderActiveView();
+        }
+      }
+    });
+
+    // Real-time Cloud Firestore Direct Messages Listener
+    window.FirebaseService.subscribeConversations((cloudConvs) => {
+      if (cloudConvs && cloudConvs.length > 0) {
+        AppState.conversations = cloudConvs;
+        persistData("vu_conversations", AppState.conversations);
+        if (!AppState.activeChatId && cloudConvs.length > 0) {
+          AppState.activeChatId = cloudConvs[0].id;
+        }
+        if (AppState.activeView === "chats") {
+          renderActiveView();
+        }
+        updateUnreadBadge();
+      }
+    });
   }
 
   function loadPersistedData() {
@@ -167,6 +228,9 @@
   function saveSession(user) {
     AppState.currentUser = user;
     persistData("vu_connect_user", user);
+    if (window.FirebaseService && typeof window.FirebaseService.saveUser === "function") {
+      window.FirebaseService.saveUser(user);
+    }
     renderNavigation();
   }
 
@@ -821,6 +885,10 @@
     AppState.matchProfiles.push(newStudent);
     persistData("vu_match_profiles", AppState.matchProfiles);
 
+    if (window.FirebaseService && typeof window.FirebaseService.addMatchProfile === "function") {
+      window.FirebaseService.addMatchProfile(newStudent);
+    }
+
     closeCreateProfileModal();
     const form = document.getElementById("create-profile-form");
     if (form) form.reset();
@@ -901,6 +969,9 @@
     if (catchup.isJoined) {
       catchup.isJoined = false;
       catchup.attendees--;
+      if (window.FirebaseService && typeof window.FirebaseService.toggleCatchupAttendance === "function") {
+        window.FirebaseService.toggleCatchupAttendance(id, AppState.currentUser ? AppState.currentUser.id : "guest", false);
+      }
       showToast("Left CatchUp", `You left "${catchup.title}".`);
     } else {
       if (catchup.attendees >= catchup.maxAttendees) {
@@ -909,6 +980,9 @@
       }
       catchup.isJoined = true;
       catchup.attendees++;
+      if (window.FirebaseService && typeof window.FirebaseService.toggleCatchupAttendance === "function") {
+        window.FirebaseService.toggleCatchupAttendance(id, AppState.currentUser ? AppState.currentUser.id : "guest", true);
+      }
       showToast("Spot Confirmed", `You are attending "${catchup.title}".`);
     }
 
@@ -957,6 +1031,10 @@
 
     AppState.catchups.unshift(newCatchup);
     persistData("vu_catchups", AppState.catchups);
+
+    if (window.FirebaseService && typeof window.FirebaseService.addCatchup === "function") {
+      window.FirebaseService.addCatchup(newCatchup);
+    }
 
     closeHostCatchupModal();
     const hostForm = document.getElementById("host-catchup-form");
@@ -1051,9 +1129,15 @@
     if (post.hasUpvoted) {
       post.hasUpvoted = false;
       post.upvotes--;
+      if (window.FirebaseService && typeof window.FirebaseService.togglePostUpvote === "function") {
+        window.FirebaseService.togglePostUpvote(id, AppState.currentUser ? AppState.currentUser.id : "guest", false);
+      }
     } else {
       post.hasUpvoted = true;
       post.upvotes++;
+      if (window.FirebaseService && typeof window.FirebaseService.togglePostUpvote === "function") {
+        window.FirebaseService.togglePostUpvote(id, AppState.currentUser ? AppState.currentUser.id : "guest", true);
+      }
     }
     persistData("vu_hub_posts", AppState.hubPosts);
     renderHubsView();
@@ -1103,6 +1187,10 @@
 
     AppState.hubPosts.unshift(newPost);
     persistData("vu_hub_posts", AppState.hubPosts);
+
+    if (window.FirebaseService && typeof window.FirebaseService.addHubPost === "function") {
+      window.FirebaseService.addHubPost(newPost);
+    }
 
     closeCreatePostModal();
     const form = document.getElementById("create-post-form");
@@ -1260,6 +1348,10 @@
     input.value = "";
     renderChatsView();
 
+    if (window.FirebaseService && typeof window.FirebaseService.addMessage === "function") {
+      window.FirebaseService.addMessage(activeConv.id, { sender: "me", text: text, time: timeStr });
+    }
+
     // Automated Interactive Reply for test messaging
     setTimeout(() => {
       const replies = [
@@ -1316,6 +1408,10 @@
     AppState.conversations.unshift(newConv);
     AppState.activeChatId = newConv.id;
     persistData("vu_conversations", AppState.conversations);
+
+    if (window.FirebaseService && typeof window.FirebaseService.saveConversation === "function") {
+      window.FirebaseService.saveConversation(newConv);
+    }
 
     closeNewChatModal();
     const form = document.getElementById("new-chat-form");
