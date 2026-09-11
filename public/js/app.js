@@ -16,6 +16,7 @@
     pin: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>`,
     clock: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>`,
     users: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>`,
+    userPlus: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><line x1="19" y1="8" x2="19" y2="14"></line><line x1="22" y1="11" x2="16" y2="11"></line></svg>`,
     chat: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>`,
     upvote: `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="18 15 12 9 6 15"></polyline></svg>`,
     check: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>`,
@@ -527,20 +528,20 @@
       }
     }
 
-    // Match radar status
+    // Study partner radar status
     const radarText = document.getElementById("dash-match-radar-text");
     if (radarText) {
       const count = AppState.matchProfiles.length;
       if (count === 0) {
-        radarText.innerHTML = "No candidate profiles in the stack yet. Tap <b>+ Add Scholar Profile</b> to register your syllabus and test matchmaking.";
+        radarText.innerHTML = "No study partner profiles in the directory yet. Tap <b>+ Add Scholar Profile</b> to register your syllabus and find a study buddy.";
       } else {
-        radarText.innerHTML = `You have <b>${count} candidate scholar${count > 1 ? 's' : ''}</b> ready in the IATS matchmaking discovery stack.`;
+        radarText.innerHTML = `You have <b>${count} candidate study partner${count > 1 ? 's' : ''}</b> ready in the IATS directory.`;
       }
     }
   }
 
   // ==========================================
-  // Matchmaking Engine Logic
+  // Study Partner & Buddy Engine Logic
   // ==========================================
   function renderMatchView() {
     const container = document.getElementById("match-card-container");
@@ -549,12 +550,12 @@
     if (AppState.matchProfiles.length === 0) {
       container.innerHTML = `
         <div class="glass-panel" style="text-align: center; padding: 48px 24px; max-width: 580px; margin: 0 auto;">
-          <div style="width: 60px; height: 60px; border-radius: 50%; background: #FEE2E2; color: #D8232A; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 16px;">
-            ${ICONS.heart}
+          <div style="width: 60px; height: 60px; border-radius: 50%; background: #EFF6FF; color: #3A86C8; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+            ${ICONS.users}
           </div>
-          <h3 style="font-size: 1.4rem; font-weight: 800; color: #1E293B; margin-bottom: 8px;">No Scholar Profiles in Stack Yet</h3>
+          <h3 style="font-size: 1.4rem; font-weight: 800; color: #1E293B; margin-bottom: 8px;">No Study Buddies in Directory Yet</h3>
           <p style="color: #64748B; max-width: 440px; margin: 0 auto 24px auto;">
-            The real-time Firestore peer stack is ready. Add your scholar profile or register classmates with syllabus codes to test academic compatibility.
+            The real-time Firestore study partner directory is ready. Add your scholar profile or register classmates with syllabus codes to find compatible study buddies.
           </p>
           <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
             <button class="btn-liquid btn-primary" onclick="CampusApp.openCreateProfileModal()">
@@ -572,11 +573,11 @@
           <div style="width: 60px; height: 60px; border-radius: 50%; background: #D1FAE5; color: #059669; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 16px;">
             ${ICONS.check}
           </div>
-          <h3 style="font-size: 1.4rem; font-weight: 800; color: #1E293B; margin-bottom: 8px;">You've Reviewed All Current Matches</h3>
-          <p style="color: #64748B; max-width: 420px; margin: 0 auto 24px auto;">You can reset the stack to browse candidates again, or add a new scholar profile.</p>
+          <h3 style="font-size: 1.4rem; font-weight: 800; color: #1E293B; margin-bottom: 8px;">You've Reviewed All Current Study Buddies</h3>
+          <p style="color: #64748B; max-width: 420px; margin: 0 auto 24px auto;">You can reset the directory to review study partners again, or add a new scholar profile.</p>
           <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
             <button id="btn-reset-match-stack" class="btn-liquid btn-primary">
-              <span>Reset Discovery Stack</span>
+              <span>Review Directory Again</span>
             </button>
             <button class="btn-liquid btn-glass" onclick="CampusApp.openCreateProfileModal()">
               <span>+ Add New Scholar</span>
@@ -601,7 +602,7 @@
           <img src="${student.avatar || getRandomAfricanAvatar()}" alt="${student.name}" referrerpolicy="no-referrer">
           <div class="match-compat-chip">
             <span style="display: inline-flex; align-items: center; gap: 4px;">
-              ${ICONS.spark} ${student.compatScore || 92}% Compatibility
+              ${ICONS.spark} ${student.compatScore || 92}% Syllabus Alignment
             </span>
           </div>
           <div class="match-photo-overlay">
@@ -629,14 +630,14 @@
         </div>
 
         <div class="match-actions-bar">
-          <button class="btn-round-action btn-pass" id="btn-match-pass" title="Pass" aria-label="Pass">
+          <button class="btn-round-action btn-pass" id="btn-match-pass" title="Next Scholar" aria-label="Next Scholar">
             ${ICONS.cross}
           </button>
-          <button class="btn-round-action btn-super" id="btn-match-super" title="SuperConnect" aria-label="SuperConnect">
+          <button class="btn-round-action btn-super" id="btn-match-super" title="Study Group Invite" aria-label="Study Group Invite">
             ${ICONS.star}
           </button>
-          <button class="btn-round-action btn-like" id="btn-match-like" title="Connect" aria-label="Connect">
-            ${ICONS.heart}
+          <button class="btn-round-action btn-like" id="btn-match-like" title="Connect as Study Buddy" aria-label="Connect as Study Buddy">
+            ${ICONS.userPlus}
           </button>
         </div>
       </div>
@@ -702,7 +703,7 @@
         major: student.major,
         unread: 0,
         messages: [
-          { sender: "them", text: `Hello! Great to connect! We matched on ${student.courses && student.courses[0] ? student.courses[0] : 'IATS CONNECT'}.`, time: "Just now" }
+          { sender: "them", text: `Hello! Great to connect as study buddies! I see we share ${student.courses && student.courses[0] ? student.courses[0] : 'coursework at IATS'}.`, time: "Just now" }
         ]
       };
       AppState.conversations.unshift(conv);
@@ -783,7 +784,7 @@
     const form = document.getElementById("create-profile-form");
     if (form) form.reset();
 
-    showToast("Profile Added", `${name} added to the real-time matchmaking database.`);
+    showToast("Profile Added", `${name} added to the real-time study buddy directory.`);
     renderMatchView();
   }
 
@@ -1430,8 +1431,8 @@
       view: "dashboard"
     },
     {
-      title: "3. Smart Syllabus Matchmaker",
-      desc: "Discover compatible classmates based on shared course syllabus codes (BIT, CS, Engineering), revision preferences, and campus study proximity.",
+      title: "3. Study Partner & Buddy Finder",
+      desc: "Connect with compatible classmates based on shared course syllabus codes (BIT, CS, Engineering), revision schedules, and campus study lab proximity.",
       view: "match"
     },
     {
