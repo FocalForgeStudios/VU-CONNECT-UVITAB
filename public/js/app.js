@@ -1,7 +1,8 @@
 /**
- * VU Connect - Core Engine & Interactive State Manager
- * Victoria University Student Hub with Frosted Liquid Glass UI (Red #D8232A & Blue #3A86C8)
- * Clean SVG-based icon system with dynamic local data persistence & real interactive testing.
+ * IATS CONNECT - Core Engine & Interactive State Manager
+ * Institute of Advanced Technology & Studies Student Hub
+ * Frosted Liquid Glass UI (Crimson Red #D8232A & Royal Blue #3A86C8)
+ * Strict Academic Content Moderation & Cloud Firestore Persistence
  */
 
 (function () {
@@ -19,15 +20,29 @@
     upvote: `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="18 15 12 9 6 15"></polyline></svg>`,
     check: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>`,
     plus: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>`,
-    edit: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>`,
     mail: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>`,
     star: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>`,
-    cross: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`
+    cross: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`,
+    shield: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>`
   };
 
-  // Global Dynamic State Store
+  // Curated African student portrait collection for authentic representation
+  const AFRICAN_SCHOLAR_AVATARS = [
+    "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1522529599102-193c0d76b5b6?w=400&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1507152832244-10d45c7eda57?w=400&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1589156280159-27698a70f29e?w=400&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?w=400&auto=format&fit=crop&q=80"
+  ];
+
+  function getRandomAfricanAvatar() {
+    return AFRICAN_SCHOLAR_AVATARS[Math.floor(Math.random() * AFRICAN_SCHOLAR_AVATARS.length)];
+  }
+
+  // Global Dynamic State Store (Strictly Cloud Firestore Driven, No LocalStorage Mock Data)
   const AppState = {
-    currentUser: null, // Initialized from localStorage if exists
+    currentUser: null,
     activeView: "landing",
     generatedOTP: null,
     pendingEmail: null,
@@ -37,93 +52,40 @@
     activeChatId: null,
     activeHubCategory: "tech",
     
-    // Dynamic lists (starts clean or from localStorage)
+    // Live Cloud Database collections
     matchProfiles: [],
     catchups: [],
     hubPosts: [],
     conversations: []
   };
 
-  // Default Sample Data (Available only on explicit user request / seed button)
-  const SAMPLE_DATA = {
-    matchProfiles: [
-      {
-        id: 101,
-        name: "Elena Namubiru",
-        major: "Faculty of Science & Tech • BIT",
-        year: "3rd Year (Class of 2026)",
-        university: "Victoria University",
-        compatScore: 96,
-        bio: "Building distributed cloud apps and working on the VU Tech Innovation Hackathon. Looking for study partners in BIT 2101 & Algorithms.",
-        courses: ["BIT 2101", "CS 204", "DATA 301"],
-        interests: ["Cloud Architecture", "Hackathons", "Tech Innovation", "Robotics"],
-        avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&auto=format&fit=crop&q=80",
-        location: "VU Main Campus • Innovation Lab Floor 3"
-      },
-      {
-        id: 102,
-        name: "Marcus Kigozi",
-        major: "Faculty of Health Sciences • Nursing",
-        year: "4th Year (Class of 2025)",
-        university: "Victoria University",
-        compatScore: 89,
-        bio: "Clinical researcher and health tech advocate. Let's form an anatomy prep study group or grab coffee at the Jinja Road campus cafe.",
-        courses: ["NURS 310", "BIO 202", "PUBH 401"],
-        interests: ["Public Health", "Clinical Research", "Badminton", "Photography"],
-        avatar: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=500&auto=format&fit=crop&q=80",
-        location: "Health Sciences Lab • 150m away"
+  // ==========================================
+  // Strict Academic Content Moderation Hook
+  // ==========================================
+  function validateAcademicContent(fieldsObj, contextTitle = "Academic Entry") {
+    if (!window.IATSContentFilter || typeof window.IATSContentFilter.checkFields !== "function") {
+      return true;
+    }
+    const result = window.IATSContentFilter.checkFields(fieldsObj);
+    if (!result.allowed) {
+      const reasonBox = document.getElementById("filter-warning-reason-text");
+      if (reasonBox) {
+        reasonBox.innerHTML = `<b>Policy Rejection:</b> ${result.reason}`;
       }
-    ],
-    catchups: [
-      {
-        id: 1,
-        title: "BIT 2101 Algorithm Sprint & Coffee",
-        host: "Elena Namubiru",
-        hostAvatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80",
-        location: "VU Main Campus Innovation Hub (Floor 3)",
-        time: "Today @ 2:30 PM",
-        tag: "Study Group",
-        attendees: 3,
-        maxAttendees: 8,
-        isJoined: false
+      const warningModal = document.getElementById("content-filter-warning-modal");
+      if (warningModal) {
+        warningModal.classList.add("open");
       }
-    ],
-    hubPosts: [
-      {
-        id: 1,
-        category: "tech",
-        author: "David Mukasa",
-        authorRole: "BIT 3rd Year • VU Tech Guild",
-        authorAvatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&auto=format&fit=crop&q=80",
-        timeAgo: "2 hours ago",
-        title: "Victoria University Annual Innovation Hackathon — Teammates Wanted!",
-        content: "Forming a 4-person team for the upcoming VU Tech Guild Hackathon. Looking for someone with frontend UI skills and someone in data analytics. Join us at the Innovation Lab!",
-        upvotes: 18,
-        hasUpvoted: false,
-        commentsCount: 5,
-        tags: ["VUHackathon", "BIT", "Innovation"]
-      }
-    ],
-    conversations: [
-      {
-        id: 1,
-        name: "Elena Namubiru",
-        avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80",
-        status: "online",
-        major: "Science & Tech • BIT",
-        unread: 0,
-        messages: [
-          { sender: "them", text: "Hello! Saw we connected on VU Connect!", time: "10:14 AM" }
-        ]
-      }
-    ]
-  };
+      showToast("Submission Blocked", "Your input violates the IATS Academic Policy against non-academic content.");
+      return false;
+    }
+    return true;
+  }
 
   // ==========================================
-  // Initialization & Local Storage Management
+  // Initialization & Real Database Synchronization
   // ==========================================
   function initApp() {
-    loadPersistedData();
     renderNavigation();
     bindEvents();
     renderActiveView();
@@ -142,92 +104,47 @@
       return;
     }
 
+    console.log("✓ Connecting IATS CONNECT to live Cloud Firestore collections...");
+
     // Real-time Cloud Firestore Matchmaking Candidates Listener
     window.FirebaseService.subscribeMatchProfiles((cloudProfiles) => {
-      if (cloudProfiles && cloudProfiles.length > 0) {
-        AppState.matchProfiles = cloudProfiles;
-        persistData("vu_match_profiles", AppState.matchProfiles);
-        if (AppState.activeView === "match" || AppState.activeView === "dashboard") {
-          renderActiveView();
-        }
+      AppState.matchProfiles = cloudProfiles || [];
+      if (AppState.activeView === "match" || AppState.activeView === "dashboard") {
+        renderActiveView();
       }
     });
 
-    // Real-time Cloud Firestore CatchUps (Study Meetups) Listener
+    // Real-time Cloud Firestore Academic Events & News Listener
     window.FirebaseService.subscribeCatchups((cloudCatchups) => {
-      if (cloudCatchups && cloudCatchups.length > 0) {
-        AppState.catchups = cloudCatchups;
-        persistData("vu_catchups", AppState.catchups);
-        if (AppState.activeView === "catchup" || AppState.activeView === "dashboard") {
-          renderActiveView();
-        }
+      AppState.catchups = cloudCatchups || [];
+      if (AppState.activeView === "catchup" || AppState.activeView === "dashboard") {
+        renderActiveView();
       }
     });
 
-    // Real-time Cloud Firestore Faculty Hub Posts Listener
+    // Real-time Cloud Firestore Course Discussions Listener
     window.FirebaseService.subscribeHubPosts(AppState.activeHubCategory, (cloudPosts) => {
-      if (cloudPosts && cloudPosts.length > 0) {
-        AppState.hubPosts = cloudPosts;
-        persistData("vu_hub_posts", AppState.hubPosts);
-        if (AppState.activeView === "hubs" || AppState.activeView === "dashboard") {
-          renderActiveView();
-        }
+      AppState.hubPosts = cloudPosts || [];
+      if (AppState.activeView === "hubs" || AppState.activeView === "dashboard") {
+        renderActiveView();
       }
     });
 
     // Real-time Cloud Firestore Direct Messages Listener
     window.FirebaseService.subscribeConversations((cloudConvs) => {
-      if (cloudConvs && cloudConvs.length > 0) {
-        AppState.conversations = cloudConvs;
-        persistData("vu_conversations", AppState.conversations);
-        if (!AppState.activeChatId && cloudConvs.length > 0) {
-          AppState.activeChatId = cloudConvs[0].id;
-        }
-        if (AppState.activeView === "chats") {
-          renderActiveView();
-        }
-        updateUnreadBadge();
+      AppState.conversations = cloudConvs || [];
+      if (!AppState.activeChatId && cloudConvs && cloudConvs.length > 0) {
+        AppState.activeChatId = cloudConvs[0].id;
       }
+      if (AppState.activeView === "chats") {
+        renderActiveView();
+      }
+      updateUnreadBadge();
     });
-  }
-
-  function loadPersistedData() {
-    try {
-      const savedUser = localStorage.getItem("vu_connect_user");
-      if (savedUser) AppState.currentUser = JSON.parse(savedUser);
-
-      const savedMatches = localStorage.getItem("vu_match_profiles");
-      if (savedMatches) AppState.matchProfiles = JSON.parse(savedMatches);
-
-      const savedCatchups = localStorage.getItem("vu_catchups");
-      if (savedCatchups) AppState.catchups = JSON.parse(savedCatchups);
-
-      const savedPosts = localStorage.getItem("vu_hub_posts");
-      if (savedPosts) AppState.hubPosts = JSON.parse(savedPosts);
-
-      const savedChats = localStorage.getItem("vu_conversations");
-      if (savedChats) {
-        AppState.conversations = JSON.parse(savedChats);
-        if (AppState.conversations.length > 0 && !AppState.activeChatId) {
-          AppState.activeChatId = AppState.conversations[0].id;
-        }
-      }
-    } catch (e) {
-      console.warn("Storage access restricted, using in-memory state.");
-    }
-  }
-
-  function persistData(key, data) {
-    try {
-      localStorage.setItem(key, JSON.stringify(data));
-    } catch (e) {
-      console.warn(`Failed to persist ${key}`, e);
-    }
   }
 
   function saveSession(user) {
     AppState.currentUser = user;
-    persistData("vu_connect_user", user);
     if (window.FirebaseService && typeof window.FirebaseService.saveUser === "function") {
       window.FirebaseService.saveUser(user);
     }
@@ -236,50 +153,9 @@
 
   function clearSession() {
     AppState.currentUser = null;
-    try {
-      localStorage.removeItem("vu_connect_user");
-    } catch (e) {}
     renderNavigation();
     navigateTo("landing");
-    showToast("Signed Out", "You are currently in guest preview mode.");
-  }
-
-  function seedSampleData() {
-    AppState.matchProfiles = JSON.parse(JSON.stringify(SAMPLE_DATA.matchProfiles));
-    AppState.catchups = JSON.parse(JSON.stringify(SAMPLE_DATA.catchups));
-    AppState.hubPosts = JSON.parse(JSON.stringify(SAMPLE_DATA.hubPosts));
-    AppState.conversations = JSON.parse(JSON.stringify(SAMPLE_DATA.conversations));
-    AppState.currentMatchIndex = 0;
-    if (AppState.conversations.length > 0) {
-      AppState.activeChatId = AppState.conversations[0].id;
-    }
-
-    persistData("vu_match_profiles", AppState.matchProfiles);
-    persistData("vu_catchups", AppState.catchups);
-    persistData("vu_hub_posts", AppState.hubPosts);
-    persistData("vu_conversations", AppState.conversations);
-
-    renderActiveView();
-    updateUnreadBadge();
-    showToast("Sample Data Loaded", "Sample student profiles, catchups, and guild posts are now available for testing.");
-  }
-
-  function clearAllData() {
-    AppState.matchProfiles = [];
-    AppState.catchups = [];
-    AppState.hubPosts = [];
-    AppState.conversations = [];
-    AppState.currentMatchIndex = 0;
-    AppState.activeChatId = null;
-
-    localStorage.removeItem("vu_match_profiles");
-    localStorage.removeItem("vu_catchups");
-    localStorage.removeItem("vu_hub_posts");
-    localStorage.removeItem("vu_conversations");
-
-    renderActiveView();
-    updateUnreadBadge();
-    showToast("All Data Cleared", "All student records, meetups, discussions, and chat messages have been reset.");
+    showToast("Signed Out", "You are now in guest preview mode.");
   }
 
   // ==========================================
@@ -344,9 +220,9 @@
     if (AppState.currentUser) {
       userContainer.innerHTML = `
         <div class="user-profile-pill" id="btn-header-profile" title="View Profile" style="cursor: pointer;">
-          <img src="${AppState.currentUser.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80'}" class="user-avatar-sm" alt="User">
+          <img src="${AppState.currentUser.avatar || getRandomAfricanAvatar()}" class="user-avatar-sm" alt="${AppState.currentUser.name}">
           <span style="font-weight: 700; font-size: 0.88rem; color: #1E293B;">${AppState.currentUser.name}</span>
-          <span class="tag-pill tag-pill-highlight" style="font-size: 0.72rem; padding: 2px 8px;">VU Verified</span>
+          <span class="tag-pill tag-pill-highlight" style="font-size: 0.72rem; padding: 2px 8px;">IATS Verified</span>
         </div>
         <button class="btn-liquid btn-glass btn-sm" id="btn-header-logout" title="Sign Out">
           <span>Sign Out</span>
@@ -414,16 +290,16 @@
 
   function handleGoogleSignIn() {
     const googleUser = {
-      id: "usr_vu_google_" + Math.random().toString(36).substring(2, 7),
-      name: "Focal Forges",
-      email: "focalforges@gmail.com",
-      university: "Victoria University",
-      major: "Faculty of Science & Tech • BIT",
+      id: "usr_iats_google_" + Math.random().toString(36).substring(2, 7),
+      name: "Kato Emmanuel",
+      email: "emmanuel.kato@gmail.com",
+      university: "IATS",
+      major: "Faculty of Computing & Information Tech",
       year: "Class of 2026",
       authProvider: "Google SSO (Verified)",
       isVerified: true,
-      bio: "Active Victoria University scholar building modern liquid UI applications and distributed real-time systems.",
-      avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&auto=format&fit=crop&q=80",
+      bio: "Active IATS scholar building distributed cloud applications, database systems, and academic collaboration tools.",
+      avatar: "https://images.unsplash.com/photo-1522529599102-193c0d76b5b6?w=200&auto=format&fit=crop&q=80",
       skills: ["Software Engineering", "Full-Stack", "Algorithms", "Cloud Systems"]
     };
 
@@ -536,17 +412,17 @@
       const formattedName = namePart.charAt(0).toUpperCase() + namePart.slice(1);
 
       const verifiedUser = {
-        id: "usr_vu_" + Math.random().toString(36).substring(2, 9),
-        name: formattedName || "Victoria University Scholar",
+        id: "usr_iats_" + Math.random().toString(36).substring(2, 9),
+        name: formattedName || "IATS Scholar",
         email: email,
-        university: "Victoria University",
-        major: "Faculty of Science & Technology",
+        university: "IATS",
+        major: "Faculty of Computing & Information Tech",
         year: "Class of 2026",
         authProvider: "Personal Email OTP Verification",
         isVerified: true,
-        bio: "Victoria University student connected on VU Connect via personal email.",
-        avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&auto=format&fit=crop&q=80",
-        skills: ["Software Engineering", "Algorithms", "Campus Guild"]
+        bio: "Institute of Advanced Technology & Studies scholar connected on IATS CONNECT.",
+        avatar: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=200&auto=format&fit=crop&q=80",
+        skills: ["Software Engineering", "Algorithms", "Database Systems"]
       };
 
       saveSession(verifiedUser);
@@ -554,7 +430,7 @@
       
       setTimeout(() => {
         closeAuthModal();
-        showToast("Account Activated", `Welcome to VU Connect, ${verifiedUser.name}!`);
+        showToast("Account Activated", `Welcome to IATS CONNECT, ${verifiedUser.name}!`);
         navigateTo("dashboard");
       }, 1000);
     } else {
@@ -568,7 +444,7 @@
   }
 
   // ==========================================
-  // Dashboard Logic View
+  // Dashboard Logic View (Feed)
   // ==========================================
   function renderDashboardView() {
     const userBanner = document.getElementById("dash-user-welcome");
@@ -576,16 +452,16 @@
       userBanner.textContent = `Welcome back, ${AppState.currentUser.name}!`;
     }
 
-    // Render Quick CatchUps in Dashboard
+    // Render Quick Academic Events in Dashboard
     const quickCatchupList = document.getElementById("dash-catchup-preview");
     if (quickCatchupList) {
       if (AppState.catchups.length === 0) {
         quickCatchupList.innerHTML = `
           <div class="glass-panel" style="padding: 24px; text-align: center;">
-            <div style="font-weight: 700; font-size: 0.95rem; color: #1E293B; margin-bottom: 4px;">No Scheduled CatchUps</div>
-            <p style="font-size: 0.85rem; color: #64748B; margin-bottom: 12px;">Host a spontaneous study sprint or coffee meetup to kickstart campus activities.</p>
+            <div style="font-weight: 700; font-size: 0.95rem; color: #1E293B; margin-bottom: 4px;">No Scheduled Academic Events</div>
+            <p style="font-size: 0.85rem; color: #64748B; margin-bottom: 12px;">Host a study sprint, lecture discussion, or departmental seminar on campus.</p>
             <button class="btn-liquid btn-primary btn-sm" onclick="CampusApp.openHostCatchupModal()">
-              <span>+ Host First CatchUp</span>
+              <span>+ Host First Event</span>
             </button>
           </div>
         `;
@@ -593,7 +469,7 @@
         quickCatchupList.innerHTML = AppState.catchups.slice(0, 2).map(c => `
           <div class="glass-panel" style="padding: 16px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between;">
             <div style="display: flex; align-items: center; gap: 12px;">
-              <img src="${c.hostAvatar}" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;" alt="host">
+              <img src="${c.hostAvatar || getRandomAfricanAvatar()}" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;" alt="host">
               <div>
                 <div style="font-weight: 700; font-size: 0.94rem; color: #1E293B;">${c.title}</div>
                 <div style="font-size: 0.82rem; color: #64748B; display: flex; align-items: center; gap: 4px; margin-top: 2px;">
@@ -608,7 +484,7 @@
         `).join("");
 
         quickCatchupList.querySelectorAll(".btn-join-catchup").forEach(btn => {
-          btn.addEventListener("click", () => toggleJoinCatchup(parseInt(btn.dataset.id)));
+          btn.addEventListener("click", () => toggleJoinCatchup(btn.dataset.id));
         });
       }
     }
@@ -619,8 +495,8 @@
       if (AppState.hubPosts.length === 0) {
         dashHubPreview.innerHTML = `
           <div class="glass-panel" style="padding: 24px; text-align: center;">
-            <div style="font-weight: 700; font-size: 0.95rem; color: #1E293B; margin-bottom: 4px;">No Guild Discussions Yet</div>
-            <p style="font-size: 0.85rem; color: #64748B; margin-bottom: 12px;">Share coursework notes or ask study questions in your faculty hub.</p>
+            <div style="font-weight: 700; font-size: 0.95rem; color: #1E293B; margin-bottom: 4px;">No Course Discussions Yet</div>
+            <p style="font-size: 0.85rem; color: #64748B; margin-bottom: 12px;">Share lecture notes, ask coursework questions, or start an academic forum thread.</p>
             <button class="btn-liquid btn-primary btn-sm" onclick="CampusApp.openCreatePostModal()">
               <span>+ Create Discussion Post</span>
             </button>
@@ -631,19 +507,19 @@
           <div class="glass-panel" style="padding: 16px; margin-bottom: 12px;">
             <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
               <div style="display: flex; align-items: center; gap: 8px;">
-                <img src="${p.authorAvatar}" style="width: 28px; height: 28px; border-radius: 50%;" alt="author">
+                <img src="${p.authorAvatar || getRandomAfricanAvatar()}" style="width: 28px; height: 28px; border-radius: 50%; object-fit: cover;" alt="author">
                 <span style="font-weight: 700; font-size: 0.85rem; color: #1E293B;">${p.author}</span>
               </div>
-              <span class="tag-pill tag-pill-highlight" style="font-size: 0.75rem;">${p.category.toUpperCase()}</span>
+              <span class="tag-pill tag-pill-highlight" style="font-size: 0.75rem;">${(p.category || 'TECH').toUpperCase()}</span>
             </div>
             <div style="font-weight: 700; font-size: 0.95rem; margin-bottom: 4px; color: #1E293B;">${p.title}</div>
-            <div style="font-size: 0.84rem; color: #475569; margin-bottom: 10px;">${p.content.substring(0, 110)}...</div>
+            <div style="font-size: 0.84rem; color: #475569; margin-bottom: 10px;">${p.content ? p.content.substring(0, 110) + '...' : ''}</div>
             <div style="display: flex; align-items: center; gap: 14px; font-size: 0.8rem; color: #64748B;">
               <span style="color: #D8232A; font-weight: 600; display: flex; align-items: center; gap: 4px;">
-                ${ICONS.upvote} ${p.upvotes} Upvotes
+                ${ICONS.upvote} ${p.upvotes || 0} Upvotes
               </span>
               <span style="display: flex; align-items: center; gap: 4px;">
-                ${ICONS.chat} ${p.commentsCount} Discussions
+                ${ICONS.chat} ${p.commentsCount || 0} Discussions
               </span>
             </div>
           </div>
@@ -656,9 +532,9 @@
     if (radarText) {
       const count = AppState.matchProfiles.length;
       if (count === 0) {
-        radarText.innerHTML = "No candidate profiles in the stack yet. Tap <b>+ Profile</b> to add candidate students and test matchmaking.";
+        radarText.innerHTML = "No candidate profiles in the stack yet. Tap <b>+ Add Scholar Profile</b> to register your syllabus and test matchmaking.";
       } else {
-        radarText.innerHTML = `You have <b>${count} candidate scholar${count > 1 ? 's' : ''}</b> ready in the matchmaking discovery stack.`;
+        radarText.innerHTML = `You have <b>${count} candidate scholar${count > 1 ? 's' : ''}</b> ready in the IATS matchmaking discovery stack.`;
       }
     }
   }
@@ -676,16 +552,13 @@
           <div style="width: 60px; height: 60px; border-radius: 50%; background: #FEE2E2; color: #D8232A; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 16px;">
             ${ICONS.heart}
           </div>
-          <h3 style="font-size: 1.4rem; font-weight: 800; color: #1E293B; margin-bottom: 8px;">No Match Profiles Yet</h3>
-          <p style="color: #64748B; max-width: 420px; margin: 0 auto 24px auto;">
-            The matchmaking stack is currently empty. You can add a student profile to test compatibility scoring, or load sample profiles.
+          <h3 style="font-size: 1.4rem; font-weight: 800; color: #1E293B; margin-bottom: 8px;">No Scholar Profiles in Stack Yet</h3>
+          <p style="color: #64748B; max-width: 440px; margin: 0 auto 24px auto;">
+            The real-time Firestore peer stack is ready. Add your scholar profile or register classmates with syllabus codes to test academic compatibility.
           </p>
           <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
             <button class="btn-liquid btn-primary" onclick="CampusApp.openCreateProfileModal()">
-              <span>+ Add Student Profile</span>
-            </button>
-            <button class="btn-liquid btn-glass" onclick="CampusApp.seedSampleData()">
-              <span>Load Sample Profiles</span>
+              <span>+ Add Scholar Profile</span>
             </button>
           </div>
         </div>
@@ -700,13 +573,13 @@
             ${ICONS.check}
           </div>
           <h3 style="font-size: 1.4rem; font-weight: 800; color: #1E293B; margin-bottom: 8px;">You've Reviewed All Current Matches</h3>
-          <p style="color: #64748B; max-width: 420px; margin: 0 auto 24px auto;">You can reset the stack to browse candidates again, or add a new profile.</p>
+          <p style="color: #64748B; max-width: 420px; margin: 0 auto 24px auto;">You can reset the stack to browse candidates again, or add a new scholar profile.</p>
           <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
             <button id="btn-reset-match-stack" class="btn-liquid btn-primary">
               <span>Reset Discovery Stack</span>
             </button>
             <button class="btn-liquid btn-glass" onclick="CampusApp.openCreateProfileModal()">
-              <span>+ Add New Candidate</span>
+              <span>+ Add New Scholar</span>
             </button>
           </div>
         </div>
@@ -725,7 +598,7 @@
     container.innerHTML = `
       <div class="glass-panel match-card-main">
         <div class="match-photo-holder">
-          <img src="${student.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&auto=format&fit=crop&q=80'}" alt="${student.name}" referrerpolicy="no-referrer">
+          <img src="${student.avatar || getRandomAfricanAvatar()}" alt="${student.name}" referrerpolicy="no-referrer">
           <div class="match-compat-chip">
             <span style="display: inline-flex; align-items: center; gap: 4px;">
               ${ICONS.spark} ${student.compatScore || 92}% Compatibility
@@ -735,21 +608,21 @@
             <h2 style="font-size: 1.8rem; font-weight: 800; line-height: 1.2;">${student.name}</h2>
             <div style="font-size: 0.95rem; opacity: 0.95; font-weight: 600;">${student.major} • ${student.year}</div>
             <div style="font-size: 0.82rem; opacity: 0.9; margin-top: 4px; display: flex; align-items: center; gap: 4px;">
-              ${ICONS.pin} ${student.location}
+              ${ICONS.pin} ${student.location || 'IATS Main Campus'}
             </div>
           </div>
         </div>
 
         <div class="match-body-content">
-          <div style="font-size: 0.88rem; font-weight: 700; color: #D8232A; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px;">Shared VU Courses</div>
+          <div style="font-size: 0.88rem; font-weight: 700; color: #D8232A; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px;">Registered IATS Courses</div>
           <div class="tag-list">
             ${(student.courses || []).map(c => `<span class="tag-pill tag-pill-highlight">${c}</span>`).join("")}
           </div>
 
-          <div style="font-size: 0.88rem; font-weight: 700; color: #1E293B; margin-top: 14px; margin-bottom: 6px;">About & Goals</div>
+          <div style="font-size: 0.88rem; font-weight: 700; color: #1E293B; margin-top: 14px; margin-bottom: 6px;">Academic Focus & Study Goals</div>
           <p style="font-size: 0.92rem; color: #334155; line-height: 1.55;">${student.bio}</p>
 
-          <div style="font-size: 0.88rem; font-weight: 700; color: #1E293B; margin-top: 14px; margin-bottom: 6px;">Interests & Focus</div>
+          <div style="font-size: 0.88rem; font-weight: 700; color: #1E293B; margin-top: 14px; margin-bottom: 6px;">Specializations & Interests</div>
           <div class="tag-list">
             ${(student.interests || []).map(i => `<span class="tag-pill tag-pill-blue">${i}</span>`).join("")}
           </div>
@@ -796,7 +669,7 @@
     const nameElem = document.getElementById("match-modal-name");
     if (nameElem) nameElem.textContent = student.name;
     const avatarElem = document.getElementById("match-modal-avatar");
-    if (avatarElem) avatarElem.src = student.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80';
+    if (avatarElem) avatarElem.src = student.avatar || getRandomAfricanAvatar();
     modal.classList.add("open");
 
     const msgBtn = document.getElementById("btn-match-message-now");
@@ -822,18 +695,21 @@
     let conv = AppState.conversations.find(c => c.name === student.name);
     if (!conv) {
       conv = {
-        id: Date.now(),
+        id: String(Date.now()),
         name: student.name,
-        avatar: student.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80',
+        avatar: student.avatar || getRandomAfricanAvatar(),
         status: "online",
         major: student.major,
         unread: 0,
         messages: [
-          { sender: "them", text: `Hello! Great to connect! We matched on ${student.courses && student.courses[0] ? student.courses[0] : 'VU Connect'}.`, time: "Just now" }
+          { sender: "them", text: `Hello! Great to connect! We matched on ${student.courses && student.courses[0] ? student.courses[0] : 'IATS CONNECT'}.`, time: "Just now" }
         ]
       };
       AppState.conversations.unshift(conv);
-      persistData("vu_conversations", AppState.conversations);
+
+      if (window.FirebaseService && typeof window.FirebaseService.saveConversation === "function") {
+        window.FirebaseService.saveConversation(conv);
+      }
     }
     AppState.activeChatId = conv.id;
     navigateTo("chats");
@@ -850,7 +726,7 @@
     if (modal) modal.classList.remove("open");
   }
 
-  function handleCreateProfile(e) {
+  async function handleCreateProfile(e) {
     e.preventDefault();
     const name = document.getElementById("new-student-name").value.trim();
     const major = document.getElementById("new-student-major").value.trim();
@@ -865,40 +741,54 @@
       return;
     }
 
+    // STRICT ACADEMIC CONTENT FILTER VERIFICATION
+    if (!validateAcademicContent({
+      name,
+      major,
+      year,
+      courses: coursesStr,
+      location,
+      bio,
+      interests: interestsStr
+    }, "Scholar Profile Registration")) {
+      return;
+    }
+
     const courses = coursesStr.split(",").map(c => c.trim()).filter(Boolean);
     const interests = interestsStr.split(",").map(i => i.trim()).filter(Boolean);
 
     const newStudent = {
-      id: Date.now(),
       name,
       major,
-      year: year || "Victoria University Scholar",
-      university: "Victoria University",
-      compatScore: Math.floor(82 + Math.random() * 16),
+      year: year || "IATS Scholar",
+      university: "IATS",
+      compatScore: Math.floor(84 + Math.random() * 14),
       bio,
-      courses: courses.length ? courses : ["BIT 2101", "VU Core"],
-      interests: interests.length ? interests : ["Collaborative Study", "Tech"],
-      avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&auto=format&fit=crop&q=80",
-      location: location || "VU Main Campus"
+      courses: courses.length ? courses : ["CS 201", "IT Core"],
+      interests: interests.length ? interests : ["Research", "Algorithms"],
+      avatar: getRandomAfricanAvatar(),
+      location: location || "IATS Main Campus"
     };
 
-    AppState.matchProfiles.push(newStudent);
-    persistData("vu_match_profiles", AppState.matchProfiles);
-
     if (window.FirebaseService && typeof window.FirebaseService.addMatchProfile === "function") {
-      window.FirebaseService.addMatchProfile(newStudent);
+      const saved = await window.FirebaseService.addMatchProfile(newStudent);
+      if (saved) {
+        newStudent.id = saved.id;
+      }
     }
+
+    AppState.matchProfiles.push(newStudent);
 
     closeCreateProfileModal();
     const form = document.getElementById("create-profile-form");
     if (form) form.reset();
 
-    showToast("Profile Added", `${name} added to the matchmaking stack.`);
+    showToast("Profile Added", `${name} added to the real-time matchmaking database.`);
     renderMatchView();
   }
 
   // ==========================================
-  // CatchUp Meetups Logic
+  // Academic Events & News (CatchUp) Logic
   // ==========================================
   function renderCatchUpView() {
     const grid = document.getElementById("catchup-grid-container");
@@ -910,16 +800,13 @@
           <div style="width: 56px; height: 56px; border-radius: 50%; background: #EFF6FF; color: #3A86C8; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 16px;">
             ${ICONS.coffee}
           </div>
-          <h3 style="font-size: 1.4rem; font-weight: 800; color: #1E293B; margin-bottom: 8px;">No Active CatchUps</h3>
+          <h3 style="font-size: 1.4rem; font-weight: 800; color: #1E293B; margin-bottom: 8px;">No Academic Events Scheduled</h3>
           <p style="color: #64748B; max-width: 440px; margin: 0 auto 20px auto;">
-            Spontaneous meetups are pop-up revision sessions, coffee discussions, or campus hangouts. Host your first meetup below.
+            Organize study sprints, departmental seminars, lecture discussions, or revision workshops for IATS scholars.
           </p>
           <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
             <button class="btn-liquid btn-primary" onclick="CampusApp.openHostCatchupModal()">
-              <span>+ Host First CatchUp</span>
-            </button>
-            <button class="btn-liquid btn-glass" onclick="CampusApp.seedSampleData()">
-              <span>Load Sample CatchUp</span>
+              <span>+ Host First Academic Event</span>
             </button>
           </div>
         </div>
@@ -931,9 +818,9 @@
       <div class="glass-panel catchup-card">
         <div>
           <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
-            <span class="tag-pill tag-pill-highlight">${c.tag}</span>
+            <span class="tag-pill tag-pill-highlight">${c.tag || 'Academic Event'}</span>
             <span style="font-size: 0.8rem; font-weight: 700; color: #D8232A; display: flex; align-items: center; gap: 4px;">
-              ${ICONS.users} ${c.attendees}/${c.maxAttendees} Going
+              ${ICONS.users} ${c.attendees || 1}/${c.maxAttendees || 8} Going
             </span>
           </div>
           <h3 style="font-size: 1.15rem; font-weight: 700; color: #1E293B; line-height: 1.35; margin-bottom: 6px;">${c.title}</h3>
@@ -947,46 +834,45 @@
 
         <div class="catchup-attendees">
           <div style="display: flex; align-items: center; gap: 8px;">
-            <img src="${c.hostAvatar}" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;" alt="${c.host}">
+            <img src="${c.hostAvatar || getRandomAfricanAvatar()}" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;" alt="${c.host}">
             <span style="font-size: 0.82rem; font-weight: 500;">Host: <b>${c.host}</b></span>
           </div>
           <button class="btn-liquid ${c.isJoined ? 'btn-glass' : 'btn-primary'} btn-sm btn-catchup-toggle" data-id="${c.id}">
-            ${c.isJoined ? "Leave Hangout" : "Join CatchUp"}
+            ${c.isJoined ? "Leave Event" : "Join Event"}
           </button>
         </div>
       </div>
     `).join("");
 
     grid.querySelectorAll(".btn-catchup-toggle").forEach(btn => {
-      btn.addEventListener("click", () => toggleJoinCatchup(parseInt(btn.dataset.id)));
+      btn.addEventListener("click", () => toggleJoinCatchup(btn.dataset.id));
     });
   }
 
   function toggleJoinCatchup(id) {
-    const catchup = AppState.catchups.find(c => c.id === id);
+    const catchup = AppState.catchups.find(c => String(c.id) === String(id));
     if (!catchup) return;
 
     if (catchup.isJoined) {
       catchup.isJoined = false;
-      catchup.attendees--;
+      catchup.attendees = Math.max(0, (catchup.attendees || 1) - 1);
       if (window.FirebaseService && typeof window.FirebaseService.toggleCatchupAttendance === "function") {
         window.FirebaseService.toggleCatchupAttendance(id, AppState.currentUser ? AppState.currentUser.id : "guest", false);
       }
-      showToast("Left CatchUp", `You left "${catchup.title}".`);
+      showToast("Left Event", `You left "${catchup.title}".`);
     } else {
-      if (catchup.attendees >= catchup.maxAttendees) {
-        alert("This meetup is currently at maximum capacity!");
+      if ((catchup.attendees || 0) >= (catchup.maxAttendees || 8)) {
+        alert("This academic event is currently at maximum capacity!");
         return;
       }
       catchup.isJoined = true;
-      catchup.attendees++;
+      catchup.attendees = (catchup.attendees || 0) + 1;
       if (window.FirebaseService && typeof window.FirebaseService.toggleCatchupAttendance === "function") {
         window.FirebaseService.toggleCatchupAttendance(id, AppState.currentUser ? AppState.currentUser.id : "guest", true);
       }
       showToast("Spot Confirmed", `You are attending "${catchup.title}".`);
     }
 
-    persistData("vu_catchups", AppState.catchups);
     renderActiveView();
   }
 
@@ -1000,7 +886,7 @@
     if (hostModal) hostModal.classList.remove("open");
   }
 
-  function handleCreateCatchup(e) {
+  async function handleCreateCatchup(e) {
     e.preventDefault();
     const title = document.getElementById("new-catchup-title") ? document.getElementById("new-catchup-title").value.trim() : "";
     const location = document.getElementById("new-catchup-location") ? document.getElementById("new-catchup-location").value.trim() : "";
@@ -1009,42 +895,51 @@
     const capacity = document.getElementById("new-catchup-capacity") ? (parseInt(document.getElementById("new-catchup-capacity").value) || 8) : 8;
 
     if (!title || !location || !time) {
-      alert("Please fill out all required fields for your VU CatchUp.");
+      alert("Please fill out all required fields for your IATS academic event.");
       return;
     }
 
-    const hostName = AppState.currentUser ? AppState.currentUser.name : "Victoria University Scholar";
-    const hostAvatar = AppState.currentUser ? AppState.currentUser.avatar : "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80";
+    // STRICT ACADEMIC CONTENT FILTER VERIFICATION
+    if (!validateAcademicContent({
+      title,
+      location,
+      time,
+      tag
+    }, "Academic Event Hosting")) {
+      return;
+    }
+
+    const hostName = AppState.currentUser ? AppState.currentUser.name : "IATS Scholar";
+    const hostAvatar = AppState.currentUser ? AppState.currentUser.avatar : getRandomAfricanAvatar();
 
     const newCatchup = {
-      id: Date.now(),
-      title: title,
+      title,
       host: hostName,
-      hostAvatar: hostAvatar,
-      location: location,
-      time: time,
-      tag: tag,
+      hostAvatar,
+      location,
+      time,
+      tag,
       attendees: 1,
       maxAttendees: capacity,
       isJoined: true
     };
 
-    AppState.catchups.unshift(newCatchup);
-    persistData("vu_catchups", AppState.catchups);
-
     if (window.FirebaseService && typeof window.FirebaseService.addCatchup === "function") {
-      window.FirebaseService.addCatchup(newCatchup);
+      const saved = await window.FirebaseService.addCatchup(newCatchup);
+      if (saved) newCatchup.id = saved.id;
     }
+
+    AppState.catchups.unshift(newCatchup);
 
     closeHostCatchupModal();
     const hostForm = document.getElementById("host-catchup-form");
     if (hostForm) hostForm.reset();
-    showToast("CatchUp Hosted", `"${newCatchup.title}" is now published on the feed.`);
+    showToast("Event Hosted", `"${newCatchup.title}" is now published on the academic feed.`);
     renderCatchUpView();
   }
 
   // ==========================================
-  // Campus Hubs & Discussion Logic
+  // Courses & Academic Forums (Hubs) Logic
   // ==========================================
   function renderHubsView() {
     const listContainer = document.getElementById("hub-posts-list");
@@ -1058,16 +953,13 @@
     if (filtered.length === 0) {
       listContainer.innerHTML = `
         <div class="glass-panel" style="text-align: center; padding: 48px 24px;">
-          <div style="font-weight: 700; font-size: 1.1rem; color: #1E293B; margin-bottom: 6px;">No Discussions in this Faculty Channel</div>
-          <p style="font-size: 0.88rem; color: #64748B; max-width: 420px; margin: 0 auto 20px auto;">
-            Be the first to post lecture revision notes, questions, or project announcements in this guild hub.
+          <div style="font-weight: 700; font-size: 1.1rem; color: #1E293B; margin-bottom: 6px;">No Discussions in this Course Channel</div>
+          <p style="font-size: 0.88rem; color: #64748B; max-width: 440px; margin: 0 auto 20px auto;">
+            Be the first scholar to post lecture notes, course problem sets, or research questions in this faculty forum.
           </p>
           <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
             <button class="btn-liquid btn-primary btn-sm" onclick="CampusApp.openCreatePostModal()">
               <span>+ Post in This Channel</span>
-            </button>
-            <button class="btn-liquid btn-glass btn-sm" onclick="CampusApp.seedSampleData()">
-              <span>Load Sample Post</span>
             </button>
           </div>
         </div>
@@ -1077,13 +969,13 @@
         <div class="glass-panel thread-post-card" style="margin-bottom: 16px;">
           <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
             <div style="display: flex; align-items: center; gap: 10px;">
-              <img src="${post.authorAvatar}" style="width: 38px; height: 38px; border-radius: 50%; object-fit: cover;" alt="${post.author}">
+              <img src="${post.authorAvatar || getRandomAfricanAvatar()}" style="width: 38px; height: 38px; border-radius: 50%; object-fit: cover;" alt="${post.author}">
               <div>
                 <div style="font-weight: 700; font-size: 0.92rem; color: #1E293B;">${post.author}</div>
-                <div style="font-size: 0.78rem; color: #64748B;">${post.authorRole} • ${post.timeAgo}</div>
+                <div style="font-size: 0.78rem; color: #64748B;">${post.authorRole || 'IATS Scholar'} • ${post.timeAgo || 'Recent'}</div>
               </div>
             </div>
-            <span class="tag-pill tag-pill-highlight">${post.category.toUpperCase()}</span>
+            <span class="tag-pill tag-pill-highlight">${(post.category || 'TECH').toUpperCase()}</span>
           </div>
 
           <h3 style="font-size: 1.15rem; font-weight: 700; color: #1E293B; margin-bottom: 8px;">${post.title}</h3>
@@ -1096,18 +988,18 @@
           <div style="display: flex; align-items: center; justify-content: space-between; padding-top: 12px; border-top: 1px solid rgba(0,0,0,0.05);">
             <button class="btn-liquid btn-glass btn-sm btn-upvote-post" data-id="${post.id}" style="${post.hasUpvoted ? 'color: #D8232A; font-weight: 700; border-color: #FECACA;' : ''}">
               <span style="display: inline-flex; align-items: center; gap: 4px;">
-                ${ICONS.upvote} ${post.upvotes} Upvotes
+                ${ICONS.upvote} ${post.upvotes || 0} Upvotes
               </span>
             </button>
-            <span style="font-size: 0.82rem; color: #64748B; cursor: pointer; display: flex; align-items: center; gap: 4px;">
-              ${ICONS.chat} ${post.commentsCount} Discussions
+            <span style="font-size: 0.82rem; color: #64748B; display: flex; align-items: center; gap: 4px;">
+              ${ICONS.chat} ${post.commentsCount || 0} Discussions
             </span>
           </div>
         </div>
       `).join("");
 
       listContainer.querySelectorAll(".btn-upvote-post").forEach(btn => {
-        btn.addEventListener("click", () => toggleUpvotePost(parseInt(btn.dataset.id)));
+        btn.addEventListener("click", () => toggleUpvotePost(btn.dataset.id));
       });
     }
 
@@ -1123,23 +1015,22 @@
   }
 
   function toggleUpvotePost(id) {
-    const post = AppState.hubPosts.find(p => p.id === id);
+    const post = AppState.hubPosts.find(p => String(p.id) === String(id));
     if (!post) return;
 
     if (post.hasUpvoted) {
       post.hasUpvoted = false;
-      post.upvotes--;
+      post.upvotes = Math.max(0, (post.upvotes || 1) - 1);
       if (window.FirebaseService && typeof window.FirebaseService.togglePostUpvote === "function") {
         window.FirebaseService.togglePostUpvote(id, AppState.currentUser ? AppState.currentUser.id : "guest", false);
       }
     } else {
       post.hasUpvoted = true;
-      post.upvotes++;
+      post.upvotes = (post.upvotes || 0) + 1;
       if (window.FirebaseService && typeof window.FirebaseService.togglePostUpvote === "function") {
         window.FirebaseService.togglePostUpvote(id, AppState.currentUser ? AppState.currentUser.id : "guest", true);
       }
     }
-    persistData("vu_hub_posts", AppState.hubPosts);
     renderHubsView();
   }
 
@@ -1153,7 +1044,7 @@
     if (modal) modal.classList.remove("open");
   }
 
-  function handleCreatePost(e) {
+  async function handleCreatePost(e) {
     e.preventDefault();
     const channel = document.getElementById("new-post-channel").value;
     const title = document.getElementById("new-post-title").value.trim();
@@ -1165,13 +1056,21 @@
       return;
     }
 
+    // STRICT ACADEMIC CONTENT FILTER VERIFICATION
+    if (!validateAcademicContent({
+      title,
+      content,
+      tags: tagsStr
+    }, "Course Discussion Post")) {
+      return;
+    }
+
     const tags = tagsStr.split(",").map(t => t.trim().replace(/^#/, "")).filter(Boolean);
-    const author = AppState.currentUser ? AppState.currentUser.name : "Victoria University Scholar";
-    const authorRole = AppState.currentUser ? (AppState.currentUser.major || "VU Scholar") : "Victoria University";
-    const authorAvatar = AppState.currentUser ? AppState.currentUser.avatar : "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80";
+    const author = AppState.currentUser ? AppState.currentUser.name : "IATS Scholar";
+    const authorRole = AppState.currentUser ? (AppState.currentUser.major || "IATS Scholar") : "IATS Department";
+    const authorAvatar = AppState.currentUser ? AppState.currentUser.avatar : getRandomAfricanAvatar();
 
     const newPost = {
-      id: Date.now(),
       category: channel,
       author,
       authorRole,
@@ -1182,26 +1081,26 @@
       upvotes: 1,
       hasUpvoted: true,
       commentsCount: 0,
-      tags: tags.length ? tags : ["VUConnect"]
+      tags: tags.length ? tags : ["IATSConnect", "Course"]
     };
 
-    AppState.hubPosts.unshift(newPost);
-    persistData("vu_hub_posts", AppState.hubPosts);
-
     if (window.FirebaseService && typeof window.FirebaseService.addHubPost === "function") {
-      window.FirebaseService.addHubPost(newPost);
+      const saved = await window.FirebaseService.addHubPost(newPost);
+      if (saved) newPost.id = saved.id;
     }
+
+    AppState.hubPosts.unshift(newPost);
 
     closeCreatePostModal();
     const form = document.getElementById("create-post-form");
     if (form) form.reset();
 
-    showToast("Post Published", "Your discussion is live on the faculty feed.");
+    showToast("Post Published", "Your discussion is live on the course feed.");
     renderHubsView();
   }
 
   // ==========================================
-  // Real-Time Chat Engine Logic
+  // Real-Time Direct Scholar Chats Logic
   // ==========================================
   function renderChatsView() {
     const threadsList = document.getElementById("chat-threads-container");
@@ -1213,7 +1112,7 @@
     if (AppState.conversations.length === 0) {
       threadsList.innerHTML = `
         <div style="text-align: center; padding: 24px 12px; color: #64748B; font-size: 0.88rem;">
-          No active conversations yet.
+          No active scholar chats yet.
           <button class="btn-liquid btn-primary btn-sm" style="margin-top: 12px; width: 100%;" onclick="CampusApp.openNewChatModal()">
             <span>+ Start New Chat</span>
           </button>
@@ -1231,16 +1130,13 @@
           <div style="width: 52px; height: 52px; border-radius: 50%; background: #EFF6FF; color: #3A86C8; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 12px;">
             ${ICONS.chat}
           </div>
-          <div style="font-weight: 700; font-size: 1.1rem; color: #1E293B; margin-bottom: 4px;">Direct & Group Messaging</div>
-          <p style="font-size: 0.88rem; max-width: 360px; margin: 0 auto 16px auto;">
-            Connect directly with fellow Victoria University students, form study circles, and collaborate.
+          <div style="font-weight: 700; font-size: 1.1rem; color: #1E293B; margin-bottom: 4px;">Direct Scholar Messaging</div>
+          <p style="font-size: 0.88rem; max-width: 380px; margin: 0 auto 16px auto;">
+            Connect directly with fellow IATS classmates, collaborate on coursework problem sets, and organize research study circles.
           </p>
           <div style="display: flex; gap: 10px; justify-content: center;">
             <button class="btn-liquid btn-primary btn-sm" onclick="CampusApp.openNewChatModal()">
-              <span>Start New Chat</span>
-            </button>
-            <button class="btn-liquid btn-glass btn-sm" onclick="CampusApp.seedSampleData()">
-              <span>Load Sample Chat</span>
+              <span>+ Start New Chat</span>
             </button>
           </div>
         </div>
@@ -1248,13 +1144,13 @@
       return;
     }
 
-    const activeConv = AppState.conversations.find(c => c.id === AppState.activeChatId) || AppState.conversations[0];
+    const activeConv = AppState.conversations.find(c => String(c.id) === String(AppState.activeChatId)) || AppState.conversations[0];
     if (activeConv) AppState.activeChatId = activeConv.id;
 
     // Render Left Sidebar Threads
     threadsList.innerHTML = AppState.conversations.map(c => `
-      <div class="chat-thread-item ${c.id === activeConv.id ? 'active' : ''}" data-id="${c.id}">
-        <img src="${c.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80'}" style="width: 42px; height: 42px; border-radius: 50%; object-fit: cover;" alt="${c.name}">
+      <div class="chat-thread-item ${String(c.id) === String(activeConv.id) ? 'active' : ''}" data-id="${c.id}">
+        <img src="${c.avatar || getRandomAfricanAvatar()}" style="width: 42px; height: 42px; border-radius: 50%; object-fit: cover;" alt="${c.name}">
         <div style="flex: 1; min-width: 0;">
           <div style="display: flex; align-items: center; justify-content: space-between;">
             <div style="font-weight: 700; font-size: 0.92rem; color: #1E293B; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${c.name}</div>
@@ -1269,11 +1165,10 @@
 
     threadsList.querySelectorAll(".chat-thread-item").forEach(item => {
       item.addEventListener("click", () => {
-        AppState.activeChatId = parseInt(item.dataset.id);
-        const selected = AppState.conversations.find(c => c.id === AppState.activeChatId);
+        AppState.activeChatId = item.dataset.id;
+        const selected = AppState.conversations.find(c => String(c.id) === String(AppState.activeChatId));
         if (selected) {
           selected.unread = 0;
-          persistData("vu_conversations", AppState.conversations);
           updateUnreadBadge();
         }
         renderChatsView();
@@ -1284,7 +1179,7 @@
     if (activeHeader && activeConv) {
       activeHeader.innerHTML = `
         <div style="display: flex; align-items: center; gap: 12px;">
-          <img src="${activeConv.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80'}" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;" alt="${activeConv.name}">
+          <img src="${activeConv.avatar || getRandomAfricanAvatar()}" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;" alt="${activeConv.name}">
           <div>
             <div style="font-weight: 700; font-size: 1rem; color: #1E293B;">${activeConv.name}</div>
             <div style="font-size: 0.8rem; color: #059669; display: flex; align-items: center; gap: 5px;">
@@ -1309,21 +1204,26 @@
     }
   }
 
-  function handleSendMessage(e) {
+  async function handleSendMessage(e) {
     e.preventDefault();
     const input = document.getElementById("chat-input-message");
     const text = input ? input.value.trim() : "";
     if (!text) return;
 
-    let activeConv = AppState.conversations.find(c => c.id === AppState.activeChatId);
+    // STRICT ACADEMIC CONTENT FILTER VERIFICATION
+    if (!validateAcademicContent({ message: text }, "Direct Scholar Chat Message")) {
+      return;
+    }
+
+    let activeConv = AppState.conversations.find(c => String(c.id) === String(AppState.activeChatId));
     if (!activeConv) {
       if (AppState.conversations.length === 0) {
         activeConv = {
-          id: Date.now(),
-          name: "Victoria University Peer",
-          avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80",
+          id: String(Date.now()),
+          name: "IATS Scholar",
+          avatar: getRandomAfricanAvatar(),
           status: "online",
-          major: "Science & Tech",
+          major: "Faculty of Computing & IT",
           unread: 0,
           messages: []
         };
@@ -1338,36 +1238,41 @@
     const now = new Date();
     const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
+    activeConv.messages = activeConv.messages || [];
     activeConv.messages.push({
       sender: "me",
       text: text,
       time: timeStr
     });
 
-    persistData("vu_conversations", AppState.conversations);
     input.value = "";
     renderChatsView();
 
     if (window.FirebaseService && typeof window.FirebaseService.addMessage === "function") {
-      window.FirebaseService.addMessage(activeConv.id, { sender: "me", text: text, time: timeStr });
+      await window.FirebaseService.addMessage(activeConv.id, { sender: "me", text: text, time: timeStr });
     }
 
-    // Automated Interactive Reply for test messaging
+    // Simulated Academic Collaborative Response
     setTimeout(() => {
       const replies = [
-        "Sounds like a great plan! Let's meet up at the VU Innovation Lab.",
-        "Awesome! I'll review those lecture notes right now.",
-        "Thanks for reaching out! Let me know when you're heading to the library.",
-        "Perfect! Looking forward to collaborating on our VU coursework."
+        "Sounds like a solid plan! Let's meet at the IATS Innovation & Computing Lab.",
+        "Understood! I'll review those lecture notes and problem sets right now.",
+        "Thanks for reaching out! Let me know when you're heading to the campus library.",
+        "Perfect! Looking forward to collaborating on our IATS coursework."
       ];
       const randomReply = replies[Math.floor(Math.random() * replies.length)];
+      const replyTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
       
       activeConv.messages.push({
         sender: "them",
         text: randomReply,
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        time: replyTime
       });
-      persistData("vu_conversations", AppState.conversations);
+
+      if (window.FirebaseService && typeof window.FirebaseService.addMessage === "function") {
+        window.FirebaseService.addMessage(activeConv.id, { sender: "them", text: randomReply, time: replyTime });
+      }
+
       renderChatsView();
     }, 1200);
   }
@@ -1382,7 +1287,7 @@
     if (modal) modal.classList.remove("open");
   }
 
-  function handleCreateChat(e) {
+  async function handleCreateChat(e) {
     e.preventDefault();
     const recipient = document.getElementById("new-chat-recipient").value.trim();
     const faculty = document.getElementById("new-chat-faculty").value.trim();
@@ -1393,12 +1298,21 @@
       return;
     }
 
+    // STRICT ACADEMIC CONTENT FILTER VERIFICATION
+    if (!validateAcademicContent({
+      recipient,
+      faculty,
+      message: firstMsg
+    }, "Initiate Academic Chat")) {
+      return;
+    }
+
     const newConv = {
-      id: Date.now(),
+      id: String(Date.now()),
       name: recipient,
-      avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80",
+      avatar: getRandomAfricanAvatar(),
       status: "online",
-      major: faculty || "Victoria University",
+      major: faculty || "IATS Scholar",
       unread: 0,
       messages: [
         { sender: "me", text: firstMsg, time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }
@@ -1407,17 +1321,16 @@
 
     AppState.conversations.unshift(newConv);
     AppState.activeChatId = newConv.id;
-    persistData("vu_conversations", AppState.conversations);
 
     if (window.FirebaseService && typeof window.FirebaseService.saveConversation === "function") {
-      window.FirebaseService.saveConversation(newConv);
+      await window.FirebaseService.saveConversation(newConv);
     }
 
     closeNewChatModal();
     const form = document.getElementById("new-chat-form");
     if (form) form.reset();
 
-    showToast("Chat Started", `Conversation with ${recipient} created.`);
+    showToast("Chat Started", `Academic conversation with ${recipient} created.`);
     navigateTo("chats");
   }
 
@@ -1426,13 +1339,14 @@
   // ==========================================
   function renderProfileView() {
     const user = AppState.currentUser || {
-      name: "Victoria University Scholar",
-      university: "Victoria University",
-      major: "Faculty of Science & Technology • BIT",
+      name: "IATS Scholar",
+      university: "Institute of Advanced Technology & Studies",
+      major: "Faculty of Computing & Information Tech",
       year: "3rd Year (Class of 2026)",
-      bio: "Liquid glass UI builder & distributed systems explorer at Victoria University. Connect with me for hackathons and group revisions!",
-      skills: ["Software Engineering", "Algorithms", "Cloud Architecture", "Liquid UI", "TypeScript"],
-      authProvider: "Guest Session (Preview)"
+      bio: "Active IATS scholar specializing in distributed cloud computing, modern UI systems, and academic peer collaboration.",
+      skills: ["Software Engineering", "Algorithms", "Cloud Architecture", "Database Systems", "Academic Research"],
+      authProvider: "Guest Session (Preview)",
+      avatar: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=200&auto=format&fit=crop&q=80"
     };
 
     const container = document.getElementById("profile-view-container");
@@ -1441,11 +1355,11 @@
     container.innerHTML = `
       <div class="glass-panel" style="padding: 32px; max-width: 680px; margin: 0 auto;">
         <div style="display: flex; align-items: center; gap: 24px; margin-bottom: 24px; flex-wrap: wrap;">
-          <img src="${user.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80'}" style="width: 88px; height: 88px; border-radius: 50%; object-fit: cover; border: 3px solid #D8232A; box-shadow: 0 4px 16px rgba(216,35,42,0.15);" alt="${user.name}">
+          <img src="${user.avatar || getRandomAfricanAvatar()}" style="width: 88px; height: 88px; border-radius: 50%; object-fit: cover; border: 3px solid #D8232A; box-shadow: 0 4px 16px rgba(216,35,42,0.15);" alt="${user.name}">
           <div>
             <div style="display: flex; align-items: center; gap: 10px;">
               <h2 style="font-size: 1.6rem; font-weight: 800; color: #1E293B;">${user.name}</h2>
-              <span class="tag-pill tag-pill-highlight" style="font-size: 0.8rem;">VU Verified</span>
+              <span class="tag-pill tag-pill-highlight" style="font-size: 0.8rem;">IATS Verified</span>
             </div>
             <div style="font-size: 0.95rem; color: #475569; font-weight: 600; margin-top: 4px;">${user.major} • ${user.university}</div>
             <div style="font-size: 0.82rem; color: #64748B; margin-top: 2px;">Auth: <b>${user.authProvider}</b></div>
@@ -1458,29 +1372,46 @@
         </div>
 
         <div style="margin-bottom: 24px;">
-          <div style="font-size: 0.88rem; font-weight: 700; color: #1E293B; margin-bottom: 8px;">Focus Areas & Skills</div>
+          <div style="font-size: 0.88rem; font-weight: 700; color: #1E293B; margin-bottom: 8px;">Academic Focus Areas & Skills</div>
           <div class="tag-list">
             ${(user.skills || []).map(s => `<span class="tag-pill tag-pill-highlight">${s}</span>`).join("")}
           </div>
         </div>
 
-        <!-- Testing & Data Management Tools -->
+        <!-- Academic Institutional Controls -->
         <div style="border-top: 1px solid rgba(0,0,0,0.06); padding-top: 20px; margin-top: 20px;">
-          <div style="font-size: 0.88rem; font-weight: 700; color: #1E293B; margin-bottom: 12px;">Testing & Local State Controls</div>
+          <div style="font-size: 0.88rem; font-weight: 700; color: #1E293B; margin-bottom: 12px;">Institutional Platform Services</div>
           <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-            <button class="btn-liquid btn-primary btn-sm" onclick="CampusApp.seedSampleData()">
-              <span>Load Sample Test Data</span>
-            </button>
-            <button class="btn-liquid btn-glass btn-sm" onclick="CampusApp.clearAllData()" style="color: #D8232A; border-color: #FECACA;">
-              <span>Clear All Local Data</span>
+            <button class="btn-liquid btn-primary btn-sm" onclick="CampusApp.openCreateProfileModal()">
+              <span>+ Register Scholar Candidate</span>
             </button>
             <button class="btn-liquid btn-glass btn-sm" onclick="CampusApp.openLogicInspector()">
               <span>View System Architecture</span>
+            </button>
+            <button class="btn-liquid btn-glass btn-sm" id="btn-profile-privacy-link" style="color: #3A86C8;">
+              <span>Privacy Policy</span>
+            </button>
+            <button class="btn-liquid btn-glass btn-sm" id="btn-profile-terms-link" style="color: #3A86C8;">
+              <span>Terms of Service</span>
             </button>
           </div>
         </div>
       </div>
     `;
+
+    const privBtn = document.getElementById("btn-profile-privacy-link");
+    if (privBtn) {
+      privBtn.addEventListener("click", () => {
+        document.getElementById("privacy-policy-modal")?.classList.add("open");
+      });
+    }
+
+    const termsBtn = document.getElementById("btn-profile-terms-link");
+    if (termsBtn) {
+      termsBtn.addEventListener("click", () => {
+        document.getElementById("terms-of-service-modal")?.classList.add("open");
+      });
+    }
   }
 
   // ==========================================
@@ -1489,28 +1420,28 @@
   let tourStep = 0;
   const tourSteps = [
     {
-      title: "1. Liquid Glass Header & Authentic VU Shield",
-      desc: "Welcome to VU Connect. The top bar features the official Victoria University shield crest, frosted liquid glass navigation, and instant authentication via personal email or Google.",
+      title: "1. Liquid Glass Header & Authentic IATS Shield",
+      desc: "Welcome to IATS CONNECT. The top bar features the official Institute of Advanced Technology & Studies shield crest, frosted liquid glass navigation, and instant authentication via personal email or Google.",
       view: "landing"
     },
     {
-      title: "2. Live Victoria University Pulse",
-      desc: "The Dashboard aggregates spontaneous catch-up meetups, guild announcements, and trending discussions across faculties in real time.",
+      title: "2. Live IATS Academic Feed & Dashboard",
+      desc: "The Feed aggregates upcoming academic events, faculty seminar announcements, and trending syllabus discussions across faculties in real time.",
       view: "dashboard"
     },
     {
-      title: "3. Smart Multi-Factor Matchmaker",
-      desc: "Discover compatible classmates based on shared course syllabus codes (BIT, Nursing, BBA), revision preferences, and campus proximity.",
+      title: "3. Smart Syllabus Matchmaker",
+      desc: "Discover compatible classmates based on shared course syllabus codes (BIT, CS, Engineering), revision preferences, and campus study proximity.",
       view: "match"
     },
     {
-      title: "4. Spontaneous VU CatchUps",
-      desc: "Discover or host immediate hangouts around the Main Campus Innovation Hub, Library Terrace, or Jinja Road cafes.",
+      title: "4. Academic Events & Campus News",
+      desc: "Discover or host spontaneous study sprints, exam revision workshops, and departmental news around the IATS campus.",
       view: "catchup"
     },
     {
-      title: "5. Real-Time DMs & Faculty Guild Hubs",
-      desc: "Direct message study partners, reply to faculty forum threads, and receive instant interactive updates.",
+      title: "5. Courses & Direct Scholar Chats",
+      desc: "Direct message study partners, reply to course discussion channels, and exchange academic notes under strict academic code of conduct.",
       view: "chats"
     }
   ];
@@ -1557,7 +1488,7 @@
           renderTourStep();
         } else {
           overlay.remove();
-          showToast("Tour Completed", "Enjoy connecting with fellow Victoria University scholars.");
+          showToast("Tour Completed", "Enjoy connecting with fellow IATS scholars.");
         }
       });
     }
@@ -1682,7 +1613,7 @@
       });
     });
 
-    // Host CatchUp form
+    // Host CatchUp form (Academic Event)
     const openHostCatchup = document.getElementById("btn-open-host-catchup");
     if (openHostCatchup) openHostCatchup.addEventListener("click", openHostCatchupModal);
 
@@ -1699,7 +1630,7 @@
     const closeProfileBtn = document.getElementById("btn-close-create-profile");
     if (closeProfileBtn) closeProfileBtn.addEventListener("click", closeCreateProfileModal);
 
-    // Create Guild Post form
+    // Create Course Discussion Post form
     const openPostBtn = document.getElementById("btn-open-create-post");
     if (openPostBtn) openPostBtn.addEventListener("click", openCreatePostModal);
 
@@ -1733,6 +1664,72 @@
         if (e.target.id === "logic-inspector-modal") closeLogicInspector();
       });
     }
+
+    // Privacy Policy Modal Handlers
+    const openPrivacyBtn = document.getElementById("btn-open-privacy-policy");
+    if (openPrivacyBtn) {
+      openPrivacyBtn.addEventListener("click", () => {
+        document.getElementById("privacy-policy-modal")?.classList.add("open");
+      });
+    }
+    const closePrivacyBtn = document.getElementById("btn-close-privacy");
+    if (closePrivacyBtn) {
+      closePrivacyBtn.addEventListener("click", () => {
+        document.getElementById("privacy-policy-modal")?.classList.remove("open");
+      });
+    }
+    const privacyBackdrop = document.getElementById("privacy-policy-modal");
+    if (privacyBackdrop) {
+      privacyBackdrop.addEventListener("click", (e) => {
+        if (e.target.id === "privacy-policy-modal") {
+          privacyBackdrop.classList.remove("open");
+        }
+      });
+    }
+
+    // Terms of Service Modal Handlers
+    const openTermsBtn = document.getElementById("btn-open-terms-service");
+    if (openTermsBtn) {
+      openTermsBtn.addEventListener("click", () => {
+        document.getElementById("terms-of-service-modal")?.classList.add("open");
+      });
+    }
+    const closeTermsBtn = document.getElementById("btn-close-terms");
+    if (closeTermsBtn) {
+      closeTermsBtn.addEventListener("click", () => {
+        document.getElementById("terms-of-service-modal")?.classList.remove("open");
+      });
+    }
+    const termsBackdrop = document.getElementById("terms-of-service-modal");
+    if (termsBackdrop) {
+      termsBackdrop.addEventListener("click", (e) => {
+        if (e.target.id === "terms-of-service-modal") {
+          termsBackdrop.classList.remove("open");
+        }
+      });
+    }
+
+    // Content Filter Warning Modal Handlers
+    const closeFilterBtn = document.getElementById("btn-close-filter-warning");
+    if (closeFilterBtn) {
+      closeFilterBtn.addEventListener("click", () => {
+        document.getElementById("content-filter-warning-modal")?.classList.remove("open");
+      });
+    }
+    const ackFilterBtn = document.getElementById("btn-ack-filter-warning");
+    if (ackFilterBtn) {
+      ackFilterBtn.addEventListener("click", () => {
+        document.getElementById("content-filter-warning-modal")?.classList.remove("open");
+      });
+    }
+    const filterBackdrop = document.getElementById("content-filter-warning-modal");
+    if (filterBackdrop) {
+      filterBackdrop.addEventListener("click", (e) => {
+        if (e.target.id === "content-filter-warning-modal") {
+          filterBackdrop.classList.remove("open");
+        }
+      });
+    }
   }
 
   // Expose App globally for inline handlers & programmatic navigation
@@ -1744,8 +1741,6 @@
     openCreateProfileModal,
     openCreatePostModal,
     openNewChatModal,
-    seedSampleData,
-    clearAllData,
     startSystemTour,
     openLogicInspector
   };

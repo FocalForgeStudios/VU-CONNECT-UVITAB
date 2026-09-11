@@ -56,6 +56,8 @@ try {
   console.warn("Firebase initialization warning (falling back to local memory):", err);
 }
 
+const DEFAULT_STUDENT_AVATAR = "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=200&auto=format&fit=crop&q=80";
+
 // -------------------------------------------------------------
 // Free Tier Storage Optimizers & Safe Data Truncation Helpers
 // -------------------------------------------------------------
@@ -66,12 +68,12 @@ function sanitizeText(text, maxLen = 300) {
 
 function sanitizeAvatar(url) {
   if (!url || typeof url !== "string") {
-    return "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80";
+    return DEFAULT_STUDENT_AVATAR;
   }
   // Free tier safeguard: reject huge data URLs (>20KB) to prevent storage exhaustion
   if (url.startsWith("data:") && url.length > 25000) {
     console.warn("Avatar payload exceeded 20KB limit, defaulting to standard vector.");
-    return "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80";
+    return DEFAULT_STUDENT_AVATAR;
   }
   return url.slice(0, 500);
 }
@@ -92,14 +94,14 @@ export const FirebaseService = {
         id: String(user.id),
         name: sanitizeText(user.name, 80),
         email: sanitizeText(user.email, 100),
-        university: "Victoria University",
-        major: sanitizeText(user.major, 100) || "Faculty of Science & Tech",
+        university: "IATS",
+        major: sanitizeText(user.major, 100) || "Computer Science & IT",
         year: sanitizeText(user.year, 50) || "Class of 2026",
         bio: sanitizeText(user.bio, 500),
         courses: Array.isArray(user.courses) ? user.courses.map(c => sanitizeText(c, 30)) : [],
         interests: Array.isArray(user.interests) ? user.interests.map(i => sanitizeText(i, 30)) : [],
         avatar: sanitizeAvatar(user.avatar),
-        location: sanitizeText(user.location, 80) || "VU Main Campus",
+        location: sanitizeText(user.location, 80) || "IATS Main Campus",
         updatedAt: new Date().toISOString()
       };
       await setDoc(userRef, payload, { merge: true });
@@ -139,13 +141,13 @@ export const FirebaseService = {
         name: sanitizeText(profile.name, 80),
         major: sanitizeText(profile.major, 100),
         year: sanitizeText(profile.year, 50),
-        university: "Victoria University",
+        university: "IATS",
         compatScore: profile.compatScore || Math.floor(82 + Math.random() * 16),
         bio: sanitizeText(profile.bio, 500),
-        courses: Array.isArray(profile.courses) ? profile.courses.slice(0, 6) : ["BIT 2101"],
+        courses: Array.isArray(profile.courses) ? profile.courses.slice(0, 6) : ["CS 201"],
         interests: Array.isArray(profile.interests) ? profile.interests.slice(0, 6) : ["Study"],
         avatar: sanitizeAvatar(profile.avatar),
-        location: sanitizeText(profile.location, 80) || "VU Main Campus",
+        location: sanitizeText(profile.location, 80) || "IATS Main Campus",
         createdAt: new Date().toISOString()
       };
       const docRef = await addDoc(collection(db, "match_profiles"), payload);
@@ -157,7 +159,7 @@ export const FirebaseService = {
   },
 
   // -----------------------------------------------------------
-  // 3. Spontaneous CatchUps (Study Groups & Meetups)
+  // 3. Spontaneous Events & News (Formerly CatchUps)
   // -----------------------------------------------------------
   subscribeCatchups(onUpdate) {
     if (!this.isReady()) return () => {};
@@ -187,7 +189,7 @@ export const FirebaseService = {
         hostAvatar: sanitizeAvatar(catchup.hostAvatar),
         location: sanitizeText(catchup.location, 100),
         time: sanitizeText(catchup.time, 60),
-        tag: sanitizeText(catchup.tag, 40) || "Study Group",
+        tag: sanitizeText(catchup.tag, 40) || "Academic Event",
         attendees: 1,
         maxAttendees: Math.min(Number(catchup.maxAttendees) || 8, 30),
         attendeeIds: catchup.hostId ? [String(catchup.hostId)] : [],
@@ -262,7 +264,7 @@ export const FirebaseService = {
         upvotes: 1,
         upvoterIds: post.authorId ? [String(post.authorId)] : [],
         commentsCount: 0,
-        tags: Array.isArray(post.tags) ? post.tags.slice(0, 5).map(t => sanitizeText(t, 25)) : ["VUConnect"],
+        tags: Array.isArray(post.tags) ? post.tags.slice(0, 5).map(t => sanitizeText(t, 25)) : ["IATSConnect", "Course"],
         createdAt: new Date().toISOString()
       };
       const docRef = await addDoc(collection(db, "hub_posts"), payload);

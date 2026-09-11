@@ -1,6 +1,6 @@
 {
-  "name": "VU Connect",
-  "description": "The official student networking, study group matchmaking, spontaneous catchups, and campus guild hub for Victoria University (VU).",
+  "name": "IATS CONNECT",
+  "description": "The official student networking, peer study matching, academic events & news, course discussions, and faculty collaboration platform for IATS (Institute of Advanced Technology & Studies).",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

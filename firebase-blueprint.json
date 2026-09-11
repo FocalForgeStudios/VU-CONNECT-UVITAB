@@ -2,13 +2,13 @@
   "entities": {
     "users": {
       "title": "User",
-      "description": "Registered student profiles on Victoria University Connect",
+      "description": "Registered student profiles on IATS CONNECT",
       "type": "object",
       "properties": {
         "uid": { "type": "string", "description": "Firebase Auth UID or unique ID" },
         "name": { "type": "string", "description": "Full student name", "maxLength": 80 },
         "email": { "type": "string", "description": "Student email address" },
-        "university": { "type": "string", "description": "University affiliation", "default": "Victoria University" },
+        "university": { "type": "string", "description": "University affiliation", "default": "IATS" },
         "major": { "type": "string", "description": "Faculty & Major / Program", "maxLength": 100 },
         "year": { "type": "string", "description": "Year of study or graduation class", "maxLength": 50 },
         "bio": { "type": "string", "description": "Brief biography or study goals", "maxLength": 500 },
@@ -23,14 +23,14 @@
     },
     "match_profiles": {
       "title": "MatchProfile",
-      "description": "Discoverable student candidate cards for peer study matchmaking",
+      "description": "Discoverable student candidate cards for peer study matchmaking on IATS CONNECT",
       "type": "object",
       "properties": {
         "userId": { "type": "string", "description": "User ID of the profile creator" },
         "name": { "type": "string", "maxLength": 80 },
         "major": { "type": "string", "maxLength": 100 },
         "year": { "type": "string", "maxLength": 50 },
-        "university": { "type": "string", "default": "Victoria University" },
+        "university": { "type": "string", "default": "IATS" },
         "compatScore": { "type": "number", "minimum": 50, "maximum": 100 },
         "bio": { "type": "string", "maxLength": 500 },
         "courses": { "type": "array", "items": { "type": "string" } },
