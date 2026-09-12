@@ -29,6 +29,8 @@
 
   // Curated African student portrait collection for authentic representation
   const AFRICAN_SCHOLAR_AVATARS = [
+    "/images/scholar_female.jpg",
+    "/images/scholar_male.jpg",
     "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&auto=format&fit=crop&q=80",
     "https://images.unsplash.com/photo-1522529599102-193c0d76b5b6?w=400&auto=format&fit=crop&q=80",
     "https://images.unsplash.com/photo-1507152832244-10d45c7eda57?w=400&auto=format&fit=crop&q=80",
@@ -300,7 +302,7 @@
       authProvider: "Google SSO (Verified)",
       isVerified: true,
       bio: "Active IATS scholar building distributed cloud applications, database systems, and academic collaboration tools.",
-      avatar: "https://images.unsplash.com/photo-1522529599102-193c0d76b5b6?w=200&auto=format&fit=crop&q=80",
+      avatar: "/images/scholar_male.jpg",
       skills: ["Software Engineering", "Full-Stack", "Algorithms", "Cloud Systems"]
     };
 
@@ -422,7 +424,7 @@
         authProvider: "Personal Email OTP Verification",
         isVerified: true,
         bio: "Institute of Advanced Technology & Studies scholar connected on IATS CONNECT.",
-        avatar: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=200&auto=format&fit=crop&q=80",
+        avatar: "/images/scholar_female.jpg",
         skills: ["Software Engineering", "Algorithms", "Database Systems"]
       };
 
@@ -1347,7 +1349,7 @@
       bio: "Active IATS scholar specializing in distributed cloud computing, modern UI systems, and academic peer collaboration.",
       skills: ["Software Engineering", "Algorithms", "Cloud Architecture", "Database Systems", "Academic Research"],
       authProvider: "Guest Session (Preview)",
-      avatar: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=200&auto=format&fit=crop&q=80"
+      avatar: "/images/scholar_female.jpg"
     };
 
     const container = document.getElementById("profile-view-container");
