@@ -56,7 +56,7 @@ try {
   console.warn("Firebase initialization warning (falling back to local memory):", err);
 }
 
-const DEFAULT_STUDENT_AVATAR = "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=200&auto=format&fit=crop&q=80";
+const DEFAULT_STUDENT_AVATAR = "./images/scholar_female.jpg";
 
 // -------------------------------------------------------------
 // Free Tier Storage Optimizers & Safe Data Truncation Helpers

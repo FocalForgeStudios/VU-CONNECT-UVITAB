@@ -27,16 +27,27 @@
     shield: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>`
   };
 
-  // Curated African student portrait collection for authentic representation
+  // Base asset path resolver for GitHub Pages / subpaths / root hosting compatibility
+  function resolveAssetUrl(url) {
+    if (!url || typeof url !== "string") return "./images/scholar_female.jpg";
+    if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("data:")) {
+      return url;
+    }
+    if (url.startsWith("/")) {
+      return "." + url;
+    }
+    if (!url.startsWith("./")) {
+      return "./" + url;
+    }
+    return url;
+  }
+
+  // Curated African student portrait collection for authentic representation (100% local, offline-safe relative paths)
   const AFRICAN_SCHOLAR_AVATARS = [
-    "/images/scholar_female.jpg",
-    "/images/scholar_male.jpg",
-    "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&auto=format&fit=crop&q=80",
-    "https://images.unsplash.com/photo-1522529599102-193c0d76b5b6?w=400&auto=format&fit=crop&q=80",
-    "https://images.unsplash.com/photo-1507152832244-10d45c7eda57?w=400&auto=format&fit=crop&q=80",
-    "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&auto=format&fit=crop&q=80",
-    "https://images.unsplash.com/photo-1589156280159-27698a70f29e?w=400&auto=format&fit=crop&q=80",
-    "https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?w=400&auto=format&fit=crop&q=80"
+    "./images/scholar_female.jpg",
+    "./images/scholar_male.jpg",
+    "./images/scholar_glasses.jpg",
+    "./images/scholar_laptop.jpg"
   ];
 
   function getRandomAfricanAvatar() {
@@ -223,7 +234,7 @@
     if (AppState.currentUser) {
       userContainer.innerHTML = `
         <div class="user-profile-pill" id="btn-header-profile" title="View Profile" style="cursor: pointer;">
-          <img src="${AppState.currentUser.avatar || getRandomAfricanAvatar()}" class="user-avatar-sm" alt="${AppState.currentUser.name}">
+          <img src="${resolveAssetUrl(AppState.currentUser.avatar || getRandomAfricanAvatar())}" onerror="this.onerror=null;this.src='./images/scholar_female.jpg';" class="user-avatar-sm" alt="${AppState.currentUser.name}">
           <span style="font-weight: 700; font-size: 0.88rem; color: #1E293B;">${AppState.currentUser.name}</span>
           <span class="tag-pill tag-pill-highlight" style="font-size: 0.72rem; padding: 2px 8px;">IATS Verified</span>
         </div>
@@ -302,7 +313,7 @@
       authProvider: "Google SSO (Verified)",
       isVerified: true,
       bio: "Active IATS scholar building distributed cloud applications, database systems, and academic collaboration tools.",
-      avatar: "/images/scholar_male.jpg",
+      avatar: "./images/scholar_male.jpg",
       skills: ["Software Engineering", "Full-Stack", "Algorithms", "Cloud Systems"]
     };
 
@@ -424,7 +435,7 @@
         authProvider: "Personal Email OTP Verification",
         isVerified: true,
         bio: "Institute of Advanced Technology & Studies scholar connected on IATS CONNECT.",
-        avatar: "/images/scholar_female.jpg",
+        avatar: "./images/scholar_female.jpg",
         skills: ["Software Engineering", "Algorithms", "Database Systems"]
       };
 
@@ -472,7 +483,7 @@
         quickCatchupList.innerHTML = AppState.catchups.slice(0, 2).map(c => `
           <div class="glass-panel" style="padding: 16px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between;">
             <div style="display: flex; align-items: center; gap: 12px;">
-              <img src="${c.hostAvatar || getRandomAfricanAvatar()}" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;" alt="host">
+              <img src="${resolveAssetUrl(c.hostAvatar || getRandomAfricanAvatar())}" onerror="this.onerror=null;this.src='./images/scholar_female.jpg';" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;" alt="host">
               <div>
                 <div style="font-weight: 700; font-size: 0.94rem; color: #1E293B;">${c.title}</div>
                 <div style="font-size: 0.82rem; color: #64748B; display: flex; align-items: center; gap: 4px; margin-top: 2px;">
@@ -510,7 +521,7 @@
           <div class="glass-panel" style="padding: 16px; margin-bottom: 12px;">
             <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
               <div style="display: flex; align-items: center; gap: 8px;">
-                <img src="${p.authorAvatar || getRandomAfricanAvatar()}" style="width: 28px; height: 28px; border-radius: 50%; object-fit: cover;" alt="author">
+                <img src="${resolveAssetUrl(p.authorAvatar || getRandomAfricanAvatar())}" onerror="this.onerror=null;this.src='./images/scholar_female.jpg';" style="width: 28px; height: 28px; border-radius: 50%; object-fit: cover;" alt="author">
                 <span style="font-weight: 700; font-size: 0.85rem; color: #1E293B;">${p.author}</span>
               </div>
               <span class="tag-pill tag-pill-highlight" style="font-size: 0.75rem;">${(p.category || 'TECH').toUpperCase()}</span>
@@ -601,7 +612,7 @@
     container.innerHTML = `
       <div class="glass-panel match-card-main">
         <div class="match-photo-holder">
-          <img src="${student.avatar || getRandomAfricanAvatar()}" alt="${student.name}" referrerpolicy="no-referrer">
+          <img src="${resolveAssetUrl(student.avatar || getRandomAfricanAvatar())}" onerror="this.onerror=null;this.src='./images/scholar_female.jpg';" alt="${student.name}" referrerpolicy="no-referrer">
           <div class="match-compat-chip">
             <span style="display: inline-flex; align-items: center; gap: 4px;">
               ${ICONS.spark} ${student.compatScore || 92}% Syllabus Alignment
@@ -672,7 +683,10 @@
     const nameElem = document.getElementById("match-modal-name");
     if (nameElem) nameElem.textContent = student.name;
     const avatarElem = document.getElementById("match-modal-avatar");
-    if (avatarElem) avatarElem.src = student.avatar || getRandomAfricanAvatar();
+    if (avatarElem) {
+      avatarElem.src = resolveAssetUrl(student.avatar || getRandomAfricanAvatar());
+      avatarElem.onerror = () => { avatarElem.src = "./images/scholar_female.jpg"; };
+    }
     modal.classList.add("open");
 
     const msgBtn = document.getElementById("btn-match-message-now");
@@ -837,7 +851,7 @@
 
         <div class="catchup-attendees">
           <div style="display: flex; align-items: center; gap: 8px;">
-            <img src="${c.hostAvatar || getRandomAfricanAvatar()}" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;" alt="${c.host}">
+            <img src="${resolveAssetUrl(c.hostAvatar || getRandomAfricanAvatar())}" onerror="this.onerror=null;this.src='./images/scholar_female.jpg';" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;" alt="${c.host}">
             <span style="font-size: 0.82rem; font-weight: 500;">Host: <b>${c.host}</b></span>
           </div>
           <button class="btn-liquid ${c.isJoined ? 'btn-glass' : 'btn-primary'} btn-sm btn-catchup-toggle" data-id="${c.id}">
@@ -972,7 +986,7 @@
         <div class="glass-panel thread-post-card" style="margin-bottom: 16px;">
           <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
             <div style="display: flex; align-items: center; gap: 10px;">
-              <img src="${post.authorAvatar || getRandomAfricanAvatar()}" style="width: 38px; height: 38px; border-radius: 50%; object-fit: cover;" alt="${post.author}">
+              <img src="${resolveAssetUrl(post.authorAvatar || getRandomAfricanAvatar())}" onerror="this.onerror=null;this.src='./images/scholar_female.jpg';" style="width: 38px; height: 38px; border-radius: 50%; object-fit: cover;" alt="${post.author}">
               <div>
                 <div style="font-weight: 700; font-size: 0.92rem; color: #1E293B;">${post.author}</div>
                 <div style="font-size: 0.78rem; color: #64748B;">${post.authorRole || 'IATS Scholar'} • ${post.timeAgo || 'Recent'}</div>
@@ -1153,7 +1167,7 @@
     // Render Left Sidebar Threads
     threadsList.innerHTML = AppState.conversations.map(c => `
       <div class="chat-thread-item ${String(c.id) === String(activeConv.id) ? 'active' : ''}" data-id="${c.id}">
-        <img src="${c.avatar || getRandomAfricanAvatar()}" style="width: 42px; height: 42px; border-radius: 50%; object-fit: cover;" alt="${c.name}">
+        <img src="${resolveAssetUrl(c.avatar || getRandomAfricanAvatar())}" onerror="this.onerror=null;this.src='./images/scholar_female.jpg';" style="width: 42px; height: 42px; border-radius: 50%; object-fit: cover;" alt="${c.name}">
         <div style="flex: 1; min-width: 0;">
           <div style="display: flex; align-items: center; justify-content: space-between;">
             <div style="font-weight: 700; font-size: 0.92rem; color: #1E293B; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${c.name}</div>
@@ -1182,7 +1196,7 @@
     if (activeHeader && activeConv) {
       activeHeader.innerHTML = `
         <div style="display: flex; align-items: center; gap: 12px;">
-          <img src="${activeConv.avatar || getRandomAfricanAvatar()}" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;" alt="${activeConv.name}">
+          <img src="${resolveAssetUrl(activeConv.avatar || getRandomAfricanAvatar())}" onerror="this.onerror=null;this.src='./images/scholar_female.jpg';" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;" alt="${activeConv.name}">
           <div>
             <div style="font-weight: 700; font-size: 1rem; color: #1E293B;">${activeConv.name}</div>
             <div style="font-size: 0.8rem; color: #059669; display: flex; align-items: center; gap: 5px;">
@@ -1349,7 +1363,7 @@
       bio: "Active IATS scholar specializing in distributed cloud computing, modern UI systems, and academic peer collaboration.",
       skills: ["Software Engineering", "Algorithms", "Cloud Architecture", "Database Systems", "Academic Research"],
       authProvider: "Guest Session (Preview)",
-      avatar: "/images/scholar_female.jpg"
+      avatar: "./images/scholar_female.jpg"
     };
 
     const container = document.getElementById("profile-view-container");
@@ -1358,7 +1372,7 @@
     container.innerHTML = `
       <div class="glass-panel" style="padding: 32px; max-width: 680px; margin: 0 auto;">
         <div style="display: flex; align-items: center; gap: 24px; margin-bottom: 24px; flex-wrap: wrap;">
-          <img src="${user.avatar || getRandomAfricanAvatar()}" style="width: 88px; height: 88px; border-radius: 50%; object-fit: cover; border: 3px solid #D8232A; box-shadow: 0 4px 16px rgba(216,35,42,0.15);" alt="${user.name}">
+          <img src="${resolveAssetUrl(user.avatar || getRandomAfricanAvatar())}" onerror="this.onerror=null;this.src='./images/scholar_female.jpg';" style="width: 88px; height: 88px; border-radius: 50%; object-fit: cover; border: 3px solid #D8232A; box-shadow: 0 4px 16px rgba(216,35,42,0.15);" alt="${user.name}">
           <div>
             <div style="display: flex; align-items: center; gap: 10px;">
               <h2 style="font-size: 1.6rem; font-weight: 800; color: #1E293B;">${user.name}</h2>
